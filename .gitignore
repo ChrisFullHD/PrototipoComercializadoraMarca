@@ -22,3 +22,7 @@ media/
 
 # Archivos de entorno virtual
 .venv
+
+# Archvos de pip
+Pipfile
+Pipfile.lock
