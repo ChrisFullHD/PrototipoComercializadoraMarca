@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ProveedoresConfig(AppConfig):
-    name = 'Proveedores'
+    name = 'proveedores'

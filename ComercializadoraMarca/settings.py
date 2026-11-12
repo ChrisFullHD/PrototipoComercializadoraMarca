@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'ventas',
     'devoluciones_bajas',
     'proveedores',
-    'pillow',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -136,6 +135,6 @@ MAILERS = {
 }
 
 
-LOGIN_URL = '/Usuarios/login/' 
-LOGIN_REDIRECT_URL = '/Ventas/' 
+LOGIN_URL = '/usuarios/login/' 
+LOGIN_REDIRECT_URL = '/ventas/' 
 LOGOUT_REDIRECT_URL = '/Usuarios/login/'

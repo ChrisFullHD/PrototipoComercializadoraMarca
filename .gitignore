@@ -19,3 +19,6 @@ staticfiles/
 
 migrations/
 media/
+
+# Archivos de entorno virtual
+.venv
