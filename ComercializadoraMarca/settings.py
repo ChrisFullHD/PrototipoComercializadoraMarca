@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv 
+from django.contrib.messages import constants as messages 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +28,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'inventario',
+    'facturas',
+    'notificaciones',
+    'estadisticas_reportes',
+    'usuarios',
+    'ventas',
+    'devoluciones_bajas',
+    'proveedores',
+    'pillow',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5' 
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+MESSAGE_TAGS = {messages.ERROR: 'danger'} 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -43,7 +61,7 @@ ROOT_URLCONF = 'ComercializadoraMarca.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,9 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-cl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -104,6 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = BASE_DIR / 'media' 
 
 
 # Email
@@ -114,3 +134,8 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
+LOGIN_URL = '/Usuarios/login/' 
+LOGIN_REDIRECT_URL = '/Ventas/' 
+LOGOUT_REDIRECT_URL = '/Usuarios/login/'
