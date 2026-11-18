@@ -17,9 +17,6 @@ media/
 # Archivos estáticos recolectados con collectstatic
 staticfiles/
 
-migrations/
-media/
-
 # Archivos de entorno virtual
 .venv
 
