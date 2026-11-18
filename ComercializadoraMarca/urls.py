@@ -12,6 +12,7 @@ urlpatterns = [
     path('ventas/', include('ventas.urls')),
     path('devoluciones_bajas/', include('devoluciones_bajas.urls')),
     path('proveedores/', include('proveedores.urls')),
+    path('respaldos/', include('respaldos.urls')),
 ]
 
 if settings.DEBUG: urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
