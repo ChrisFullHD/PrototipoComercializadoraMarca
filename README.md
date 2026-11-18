@@ -1,5 +1,11 @@
 # Sistema de Gestión de Ventas e Inventario para Comercializadora Marca
 
+## Integrantes y usuarios de github
+
+- **Giovanni Alexis Gómez Carrasco:** strx177, StrX22
+- **Joaquín Alejandro Guarachi Gaspar:** JoakoGG
+- **Christian Matías Alexander Mollo Quispe:** ChrisFullHD
+
 ## Descripción del proyecto
 
 El proyecto consiste en el desarrollo de un sistema web interno para **Comercializadora Marca**, un negocio dedicado principalmente a la venta minorista de productos. Su objetivo es centralizar la información del negocio y facilitar la administración de sus operaciones, especialmente el control del inventario, que actualmente se realiza mediante inspecciones visuales y registros manuales.
