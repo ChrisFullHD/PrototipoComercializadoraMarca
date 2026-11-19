@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Proveedor(models.Model):
-
+    
     TIPO_CONTRIBUYENTE =[
         ('EMP', 'Empresa'),
         ('PER', 'Persona Natural'),
