@@ -4,9 +4,15 @@ from django.core.validators import MinValueValidator
 class Categoria(models.Model):
     nombre = models.CharField(max_length=50, verbose_name="Nombre de categoría", unique=True)
 
+    def __str__(self):
+        return self.nombre
+
 class Lote(models.Model):
     numero_lote = models.CharField(max_length=30, verbose_name="Número/Código de lote")
     fecha_vencimiento = models.DateField(verbose_name="Fecha de vencimiento")
+
+    def __str__(self):
+        return f'{self.numero_lote} - {self.fecha_vencimiento}'
 
 class Producto(models.Model):
     codigo_barras = models.CharField(max_length=100, verbose_name="Código de barras", unique=True)
