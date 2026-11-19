@@ -6,18 +6,19 @@ from django.contrib.messages import constants as messages
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Cargar las variables del archivo .env
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1, localhost').split(',')
 
 # Application definition
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'ventas',
     'devoluciones_bajas',
     'proveedores',
+    'respaldos',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -121,9 +123,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/' 
-MEDIA_ROOT = BASE_DIR / 'media' 
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -134,7 +136,7 @@ MAILERS = {
     },
 }
 
-
+# Rutas autenticación (app usuarios)
 LOGIN_URL = '/usuarios/login/' 
 LOGIN_REDIRECT_URL = '/ventas/' 
-LOGOUT_REDIRECT_URL = '/Usuarios/login/'
+LOGOUT_REDIRECT_URL = '/usuarios/login/'
