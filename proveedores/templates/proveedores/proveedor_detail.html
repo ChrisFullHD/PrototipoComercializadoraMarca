@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalle de proveedor | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'proveedores/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="proveedor-detail">
+  <header class="proveedor-detail__heading">
+    <div>
+      <p class="proveedor-detail__eyebrow">Directorio comercial</p>
+      <h1>{{ obj.nombre_fantasia|default:obj.razon_social }}</h1>
+      <p class="proveedor-detail__subtitle">{{ obj.razon_social }}</p>
+    </div>
+    <span class="proveedor-detail__tag">{{ obj.get_tipo_contribuyente_display }}</span>
+  </header>
+
+  <div class="proveedor-detail__grid">
+    <section class="proveedor-detail__panel" aria-labelledby="proveedor-tributary-title">
+      <div class="proveedor-detail__section-heading">
+        <span class="proveedor-detail__icon" aria-hidden="true"><i class="bi bi-building"></i></span>
+        <div>
+          <h2 id="proveedor-tributary-title">Identificación tributaria</h2>
+          <p>Información legal y comercial</p>
+        </div>
+      </div>
+      <dl class="proveedor-detail__data-grid">
+        <div class="proveedor-detail__item">
+          <dt>Razón Social</dt>
+          <dd>{{ obj.razon_social }}</dd>
+        </div>
+        <div class="proveedor-detail__item">
+          <dt>RUT</dt>
+          <dd>{{ obj.rut }}</dd>
+        </div>
+        <div class="proveedor-detail__item">
+          <dt>Tipo de contribuyente</dt>
+          <dd>{{ obj.get_tipo_contribuyente_display }}</dd>
+        </div>
+        <div class="proveedor-detail__item">
+          <dt>Giro SII</dt>
+          <dd>{{ obj.giro_sii }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="proveedor-detail__panel" aria-labelledby="proveedor-contact-title">
+      <div class="proveedor-detail__section-heading">
+        <span class="proveedor-detail__icon" aria-hidden="true"><i class="bi bi-telephone"></i></span>
+        <div>
+          <h2 id="proveedor-contact-title">Contacto y dirección</h2>
+          <p>Canales de contacto y domicilio tributario</p>
+        </div>
+      </div>
+      <dl class="proveedor-detail__data-grid">
+        <div class="proveedor-detail__item">
+          <dt>Teléfono</dt>
+          <dd>{{ obj.telefono }}</dd>
+        </div>
+        <div class="proveedor-detail__item">
+          <dt>Correo electrónico</dt>
+          <dd>{{ obj.email }}</dd>
+        </div>
+        <div class="proveedor-detail__item proveedor-detail__item--wide">
+          <dt>Dirección tributaria</dt>
+          <dd>{{ obj.direccion_tributaria }}, {{ obj.comuna }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="proveedor-detail__panel" aria-labelledby="proveedor-bank-title">
+      <div class="proveedor-detail__section-heading">
+        <span class="proveedor-detail__icon" aria-hidden="true"><i class="bi bi-credit-card"></i></span>
+        <div>
+          <h2 id="proveedor-bank-title">Datos bancarios</h2>
+          <p>Cuenta registrada para pagos</p>
+        </div>
+      </div>
+      <dl class="proveedor-detail__data-grid">
+        <div class="proveedor-detail__item">
+          <dt>Banco</dt>
+          <dd>{{ obj.banco }}</dd>
+        </div>
+        <div class="proveedor-detail__item">
+          <dt>Tipo de cuenta</dt>
+          <dd>{{ obj.get_tipo_cuenta_display }}</dd>
+        </div>
+        <div class="proveedor-detail__item proveedor-detail__item--wide">
+          <dt>Número de cuenta</dt>
+          <dd>{{ obj.numero_cuenta }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="proveedor-detail__panel" aria-labelledby="proveedor-description-title">
+      <div class="proveedor-detail__section-heading">
+        <span class="proveedor-detail__icon" aria-hidden="true"><i class="bi bi-card-text"></i></span>
+        <div>
+          <h2 id="proveedor-description-title">Descripción</h2>
+          <p>Notas e información adicional</p>
+        </div>
+      </div>
+      <p class="proveedor-detail__description">{{ obj.descripcion|linebreaksbr }}</p>
+    </section>
+  </div>
+
+  <div class="proveedor-detail__actions">
+    <a class="btn proveedor-detail__secondary" href="{% url 'lista_proveedores' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver a proveedores
+    </a>
+    {% if user.perfil.rol.nombre == 'Administrador' and user.is_authenticated %}
+    <a class="btn proveedor-detail__primary" href="{% url 'editar_proveedores' obj.id %}">
+      <i class="bi bi-pencil" aria-hidden="true"></i>
+      Editar proveedor
+    </a>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}
