@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalle de devolución | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'devoluciones_bajas/css/devolucion.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="inventory-records" aria-labelledby="devolucion-detail-title">
+  <header class="records-heading compact-heading">
+    <div>
+      <p class="module-label">Devoluciones de productos</p>
+      <h1 id="devolucion-detail-title">Detalle de devolución</h1>
+      <p>Información registrada para el movimiento seleccionado.</p>
+    </div>
+  </header>
+
+  <section class="detail-panel">
+    <div class="detail-heading">
+      <span class="detail-icon" aria-hidden="true"><i class="bi bi-arrow-return-left"></i></span>
+      <div>
+        <span class="detail-label">Registro</span>
+        <strong>DEV-{{ object.pk|stringformat:"03d" }}</strong>
+      </div>
+    </div>
+
+    <dl class="detail-list">
+      <div>
+        <dt>Producto</dt>
+        <dd>{{ object.producto|default:"-" }}</dd>
+      </div>
+      <div>
+        <dt>Motivo</dt>
+        <dd>{{ object.motivo|default:"Sin motivo registrado" }}</dd>
+      </div>
+      <div>
+        <dt>Fecha</dt>
+        <dd>{{ object.fecha|date:"d/m/Y"|default:"-" }}</dd>
+      </div>
+    </dl>
+
+    <div class="detail-actions">
+      <a class="btn btn-secondary-action" href="{% url 'lista_devoluciones' %}">Volver al listado</a>
+      <a class="btn btn-danger-action" href="{% url 'eliminar_devolucion' object.pk %}">Eliminar devolución</a>
+    </div>
+  </section>
+</section>
+{% endblock %}
