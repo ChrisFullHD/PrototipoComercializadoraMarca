@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Proveedores | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'proveedores/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="proveedores-page">
+
+  {% if messages %}
+    <div aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <header class="proveedores-page__heading">
+    <div>
+      <p class="proveedores-page__eyebrow">Directorio comercial</p>
+      <h1>Proveedores</h1>
+      <p>Consulta y organiza la información de tus proveedores.</p>
+    </div>
+    {% if user.perfil.rol.nombre == 'Administrador' and user.is_authenticated %}
+    <a class="btn proveedores-page__primary" href="{% url 'crear_proveedores' %}">
+      <i class="bi bi-plus-circle" aria-hidden="true"></i>
+      Registrar proveedor
+    </a>
+    {% endif %}
+  </header>
+
+  <section class="proveedores-page__panel" aria-labelledby="proveedores-list-title">
+    <div class="proveedores-page__toolbar">
+      <div>
+        <h2 id="proveedores-list-title">Lista de proveedores</h2>
+        <p>Información comercial y de contacto</p>
+      </div>
+
+      <form method="get" class="proveedores-page__search" role="search">
+        <label class="visually-hidden" for="proveedores-search">Buscar proveedor</label>
+        <input
+          class="form-control"
+          id="proveedores-search"
+          type="search"
+          name="q"
+          value="{{ q }}"
+          placeholder="Buscar proveedor..."
+        >
+        <button class="btn proveedores-page__search-button" type="submit" aria-label="Buscar">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="proveedores-page__table-wrap">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Proveedor</th>
+            <th scope="col">RUT</th>
+            <th scope="col">Tipo de contribuyente</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in proveedores %}
+          <tr>
+            <td class="proveedores-page__name">
+              <strong>{{ p.nombre_fantasia|default:p.razon_social }}</strong>
+              {% if p.nombre_fantasia %}
+              <span>{{ p.razon_social }}</span>
+              {% endif %}
+            </td>
+            <td>{{ p.rut }}</td>
+            <td><span class="proveedores-page__tag">{{ p.get_tipo_contribuyente_display }}</span></td>
+            <td>{{ p.telefono }}</td>
+            <td>{{ p.email }}</td>
+            <td>
+              <div class="proveedores-page__actions">
+                <a
+                  href="{% url 'detalle_proveedores' p.id %}"
+                  class="btn proveedores-page__action proveedores-page__action--detail"
+                  title="Ver detalle"
+                  aria-label="Ver detalle de {{ p.razon_social }}"
+                >
+                  <i class="bi bi-eye" aria-hidden="true"></i>
+                </a>
+                {% if user.perfil.rol.nombre == 'Administrador' and user.is_authenticated %}
+                <a
+                  href="{% url 'editar_proveedores' p.id %}"
+                  class="btn proveedores-page__action proveedores-page__action--edit"
+                  title="Editar"
+                  aria-label="Editar {{ p.razon_social }}"
+                >
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
+                </a>
+                <a
+                  href="{% url 'eliminar_proveedores' p.id %}"
+                  class="btn proveedores-page__action proveedores-page__action--delete"
+                  title="Eliminar"
+                  aria-label="Eliminar {{ p.razon_social }}"
+                >
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="proveedores-page__empty">
+              {% if q %}
+              No se encontraron proveedores que coincidan con la búsqueda.
+              {% else %}
+              Aún no hay proveedores registrados.
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

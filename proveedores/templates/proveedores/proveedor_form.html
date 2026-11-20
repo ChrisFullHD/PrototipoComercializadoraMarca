@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ accion }} proveedor | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'proveedores/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="proveedor-form-page">
+  <header class="proveedor-form-page__heading">
+    <div>
+      <p class="proveedor-form-page__eyebrow">Directorio comercial</p>
+      <h1>{{ accion }} proveedor</h1>
+      <p>Completa los datos tributarios, comerciales y bancarios.</p>
+    </div>
+    <a class="btn proveedor-form-page__secondary" href="{% url 'lista_proveedores' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver a proveedores
+    </a>
+  </header>
+
+  <section class="proveedor-form-page__panel" aria-labelledby="proveedor-form-title">
+    <form method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      <div class="proveedor-form-page__section">
+        <div class="proveedor-form-page__section-heading">
+          <h2 id="proveedor-form-title">Información del proveedor</h2>
+          <p>Datos de identificación, contacto y actividad comercial.</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12 col-md-6">{{ form.nombre_fantasia|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.razon_social|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.rut|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.tipo_contribuyente|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.giro_sii|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.telefono|as_crispy_field }}</div>
+          <div class="col-12 col-md-8">{{ form.direccion_tributaria|as_crispy_field }}</div>
+          <div class="col-12 col-md-4">{{ form.comuna|as_crispy_field }}</div>
+          <div class="col-12 col-md-6">{{ form.email|as_crispy_field }}</div>
+          <div class="col-12">{{ form.descripcion|as_crispy_field }}</div>
+        </div>
+      </div>
+
+      <div class="proveedor-form-page__section">
+        <div class="proveedor-form-page__section-heading">
+          <h2>Datos bancarios</h2>
+          <p>Información de la cuenta para pagos al proveedor.</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12 col-md-4">{{ form.banco|as_crispy_field }}</div>
+          <div class="col-12 col-md-4">{{ form.tipo_cuenta|as_crispy_field }}</div>
+          <div class="col-12 col-md-4">{{ form.numero_cuenta|as_crispy_field }}</div>
+        </div>
+      </div>
+
+      <div class="proveedor-form-page__actions">
+        <a class="btn proveedor-form-page__secondary" href="{% url 'lista_proveedores' %}">
+          Cancelar
+        </a>
+        <button class="btn proveedor-form-page__primary" type="submit">
+          <i class="bi bi-check2-circle" aria-hidden="true"></i>
+          {% if accion == 'Editar' %}Guardar cambios{% else %}Guardar proveedor{% endif %}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}

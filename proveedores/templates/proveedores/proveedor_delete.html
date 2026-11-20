@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eliminar proveedor | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'proveedores/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="proveedor-delete">
+  <header class="proveedor-delete__heading">
+    <p class="proveedor-delete__eyebrow">Directorio comercial</p>
+    <h1>Eliminar proveedor</h1>
+    <p>Confirma que deseas quitar este registro del directorio.</p>
+  </header>
+
+  <section class="proveedor-delete__panel" aria-labelledby="proveedor-delete-title">
+    <div class="proveedor-delete__warning" role="alert">
+      <span class="proveedor-delete__warning-icon" aria-hidden="true">
+        <i class="bi bi-exclamation-triangle"></i>
+      </span>
+      <div>
+        <h2 id="proveedor-delete-title">Esta acción no se puede deshacer</h2>
+        <p>El proveedor y su información serán eliminados permanentemente.</p>
+      </div>
+    </div>
+
+    <div class="proveedor-delete__identity">
+      <p class="proveedor-delete__label">Proveedor seleccionado</p>
+      <h3>{{ obj.nombre_fantasia|default:obj.razon_social }}</h3>
+      {% if obj.nombre_fantasia %}
+      <p class="proveedor-delete__legal-name">{{ obj.razon_social }}</p>
+      {% endif %}
+      <p class="proveedor-delete__rut"><strong>RUT:</strong> {{ obj.rut }}</p>
+    </div>
+
+    <form method="post" class="proveedor-delete__actions">
+    {% csrf_token %}
+      <a class="btn proveedor-delete__secondary" href="{% url 'lista_proveedores' %}">
+        Cancelar
+      </a>
+      <button type="submit" class="btn proveedor-delete__danger">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        Sí, eliminar proveedor
+      </button>
+    </form>
+  </section>
+</main>
+{% endblock %}
