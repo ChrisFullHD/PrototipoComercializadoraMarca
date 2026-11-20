@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% load static %} {% block title %}Registrar baja |
+Comercializadora Marca{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'devoluciones_bajas/css/baja.css' %}" />
+{% endblock %} {% block content %}
+<section class="inventory-records" aria-labelledby="baja-create-title">
+  <header class="records-heading compact-heading">
+    <div>
+      <p class="module-label">Bajas de productos</p>
+      <h1 id="baja-create-title">Registrar baja</h1>
+      <p>Seleccione el producto y registre el motivo de la baja.</p>
+    </div>
+  </header>
+
+  <section class="form-panel">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {% for field in form %}
+      <div class="inventory-form-field">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+        {% endif %}
+        {% if field.help_text %}
+        <small class="text-muted">{{ field.help_text }}</small>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="detail-actions">
+        <a class="btn btn-secondary-action" href="{% url 'lista_bajas' %}">Cancelar</a>
+        <button class="btn btn-primary-action" type="submit">
+          Guardar baja
+        </button>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eliminar baja | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'devoluciones_bajas/css/baja.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="inventory-records" aria-labelledby="baja-delete-title">
+  <section class="delete-panel">
+    <span class="delete-icon" aria-hidden="true"><i class="bi bi-exclamation-triangle"></i></span>
+    <h1 id="baja-delete-title">Eliminar baja</h1>
+    <p>
+      ¿Confirma que desea eliminar el registro
+      <strong>BAJ-{{ object.pk|stringformat:"03d" }}</strong>
+      del producto <strong>{{ object.producto|default:"-" }}</strong>?
+    </p>
+
+    <form method="post" class="detail-actions">
+      {% csrf_token %}
+      <a class="btn btn-secondary-action" href="{% url 'detalle_baja' object.pk %}">Cancelar</a>
+      <button class="btn btn-danger-action" type="submit">Eliminar baja</button>
+    </form>
+  </section>
+</section>
+{% endblock %}
