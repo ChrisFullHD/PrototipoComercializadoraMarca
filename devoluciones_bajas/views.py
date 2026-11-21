@@ -38,9 +38,24 @@ def crear_devolucion(request):
     form = DevolucionForms(request.POST or None, request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Devolución creada correctamente.')
-            return redirect('lista_devoluciones')
+            motivo = form.cleaned_data['motivo']
+            personalizado = form.cleaned_data['motivo_personalizado'].strip()
+
+            if motivo == 'Otro':
+                if not personalizado:
+                    form.add_error(
+                        'motivo_personalizado',
+                        'Debe especificar el motivo personalizado.',
+                    )
+                else:
+                    form.cleaned_data['motivo'] = personalizado
+                    form.save()
+                    messages.success(request, 'Devolución creada correctamente.')
+                    return redirect('lista_devoluciones')
+            else:
+                form.save()
+                messages.success(request, 'Devolución creada correctamente.')
+                return redirect('lista_devoluciones')
     return render(request, 'devoluciones_bajas/devoluciones/devoluciones_form.html', {'form': form, 'accion': 'Crear'})
 
 @login_required
@@ -53,9 +68,24 @@ def crear_baja(request):
     form = BajaForms(request.POST or None, request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Baja de producto creada correctamente.')
-            return redirect('lista_bajas')
+            motivo = form.cleaned_data['motivo']
+            personalizado = form.cleaned_data['motivo_personalizado'].strip()
+
+            if motivo == 'Otro':
+                if not personalizado:
+                    form.add_error(
+                        'motivo_personalizado',
+                        'Debe especificar el motivo personalizado.',
+                    )
+                else:
+                    form.cleaned_data['motivo'] = personalizado
+                    form.save()
+                    messages.success(request, 'Baja de producto creada correctamente.')
+                    return redirect('lista_bajas')
+            else:
+                form.save()
+                messages.success(request, 'Baja de producto creada correctamente.')
+                return redirect('lista_bajas')
     return render(request, 'devoluciones_bajas/bajas/bajas_form.html', {'form': form, 'accion': 'Crear'})
 
 @login_required
