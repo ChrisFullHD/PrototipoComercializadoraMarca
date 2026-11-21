@@ -15,7 +15,7 @@ def lista_devoluciones(request):
         messages.error(request, 'No tienes permisos para acceder a esta página.')
         return redirect('')
     
-    devolucion = Devolucion.objects.all()
+    devolucion = Devolucion.objects.all().order_by('-pk')
     return render(request, 'devoluciones_bajas/devoluciones/devoluciones_list.html', {'object_list': devolucion})
 
 @login_required
@@ -25,7 +25,7 @@ def lista_bajas(request):
         messages.error(request, 'No tienes permisos para acceder a esta página.')
         return redirect()
     
-    baja = Baja.objects.all()
+    baja = Baja.objects.all().order_by('-pk')
     return render(request, 'devoluciones_bajas/bajas/bajas_list.html', {'object_list': baja})
 
 @login_required
