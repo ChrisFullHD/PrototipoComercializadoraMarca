@@ -43,3 +43,24 @@
   </section>
 </section>
 {% endblock %}
+{% block extra_js %}
+<script>
+  (function () {
+    const motivo = document.querySelector("#id_motivo");
+    const personalizado = document.querySelector("#id_motivo_personalizado");
+    if (!motivo || !personalizado) return;
+
+    const campo = personalizado.closest(".inventory-form-field");
+
+    function actualizarCampo() {
+      const mostrar = motivo.value === "Otro";
+      if (campo) campo.hidden = !mostrar;
+      personalizado.required = mostrar;
+      if (!mostrar) personalizado.value = "";
+    }
+
+    motivo.addEventListener("change", actualizarCampo);
+    actualizarCampo();
+  })();
+</script>
+{% endblock %}
