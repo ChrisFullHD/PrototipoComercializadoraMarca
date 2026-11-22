@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ventas fiadas | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  {% if messages %}
+    <div aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Cuentas por cobrar</p>
+      <h1>Ventas fiadas</h1>
+      <p>Consulta las ventas pendientes de pago de los clientes.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'lista_ventas' %}">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+        Historial de ventas
+      </a>
+    </div>
+  </header>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="ventas-page__panel h-100">
+        <div class="text-secondary small fw-semibold">Total pendiente</div>
+        <div class="fs-3 fw-bold mt-1">${{ total_pendiente }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="ventas-page__panel h-100">
+        <div class="text-secondary small fw-semibold">Ventas por cobrar</div>
+        <div class="fs-3 fw-bold mt-1">{{ ventas_por_cobrar }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="ventas-page__panel h-100">
+        <div class="text-secondary small fw-semibold">Clientes con deuda</div>
+        <div class="fs-3 fw-bold mt-1">{{ clientes_deudores_count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="ventas-page__panel" aria-labelledby="ventas-fiadas-list-title">
+    <div class="ventas-page__toolbar">
+      <div>
+        <h2 id="ventas-fiadas-list-title">Registro de ventas fiadas</h2>
+        <p>Saldos pendientes por cliente</p>
+      </div>
+
+      <form method="get" class="ventas-page__search" role="search">
+        <label class="visually-hidden" for="ventas-fiadas-search">Buscar por cliente</label>
+        <input
+          class="form-control"
+          id="ventas-fiadas-search"
+          type="search"
+          name="q"
+          value="{{ q }}"
+          placeholder="Buscar por cliente, N.º o teléfono..."
+        >
+        <button class="btn ventas-page__search-button" type="submit" aria-label="Buscar">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="ventas-page__table-wrap">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">N.º</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Monto fiado</th>
+            <th scope="col">Abonado</th>
+            <th scope="col">Saldo pendiente</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in fiadas_con_saldo %}
+          {% with f=item.obj saldo=item.saldo_pendiente %}
+          <tr>
+            <td class="fw-semibold">#{{ f.id }}</td>
+            <td>{{ f.fecha_venta|date:"d/m/Y" }}</td>
+            <td class="fw-semibold">
+              {{ f.cliente_nombre }}
+              {% if f.cliente_telefono %}
+                <div class="text-secondary small fw-normal">{{ f.cliente_telefono }}</div>
+              {% endif %}
+            </td>
+            <td>${{ f.monto_fiado }}</td>
+            <td>${{ f.abono_inicial }}</td>
+            <td class="fw-bold">${{ saldo }}</td>
+            <td>
+              {% if f.estado == 'PAG' %}
+                <span class="badge text-bg-success">{{ f.get_estado_display }}</span>
+              {% elif f.estado == 'PAR' %}
+                <span class="badge text-bg-info">{{ f.get_estado_display }}</span>
+              {% else %}
+                <span class="badge text-bg-warning">{{ f.get_estado_display }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="ventas-page__actions">
+                <a
+                  href="{% url 'detalle_venta_fiada' f.id %}"
+                  class="btn ventas-page__action ventas-page__action--detail"
+                  title="Ver detalle"
+                  aria-label="Ver detalle de {{ f.cliente_nombre }}"
+                >
+                  <i class="bi bi-eye" aria-hidden="true"></i>
+                </a>
+                <a
+                  href="{% url 'editar_venta_fiada' f.id %}"
+                  class="btn ventas-page__action"
+                  title="Editar"
+                  aria-label="Editar {{ f.cliente_nombre }}"
+                >
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
+                </a>
+                <a
+                  href="{% url 'eliminar_venta_fiada' f.id %}"
+                  class="btn ventas-page__action"
+                  title="Eliminar"
+                  aria-label="Eliminar {{ f.cliente_nombre }}"
+                >
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endwith %}
+          {% empty %}
+          <tr>
+            <td colspan="8" class="ventas-page__empty">
+              {% if q %}
+                No se encontraron ventas fiadas que coincidan con la búsqueda.
+              {% else %}
+                Aún no hay ventas fiadas registradas.
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
