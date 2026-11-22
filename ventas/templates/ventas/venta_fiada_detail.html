@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalle venta fiada | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+  <main class="venta-fiada-detail">
+    <header class="venta-fiada-detail__heading">
+      <div>
+      <p class="ventas-page__eyebrow">Cuentas por cobrar</p>
+        <div class="venta-fiada-detail__title-row">
+          <h1>Venta fiada #{{ obj.id }}</h1>
+          {% if obj.estado == 'PAG' %}
+            <span class="venta-fiada-detail__status venta-fiada-detail__status--paid">{{ obj.get_estado_display }}</span>
+          {% elif obj.estado == 'PAR' %}
+            <span class="venta-fiada-detail__status venta-fiada-detail__status--partial">{{ obj.get_estado_display }}</span>
+          {% else %}
+            <span class="venta-fiada-detail__status venta-fiada-detail__status--pending">{{ obj.get_estado_display }}</span>
+          {% endif %}
+        </div>
+        <p>Resumen de la cuenta de <strong>{{ obj.cliente_nombre }}</strong>.</p>
+      </div>
+      <div class="venta-fiada-detail__heading-actions">
+        <a class="btn btn-outline-secondary" href="{% url 'lista_ventas_fiadas' %}">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Volver al listado
+        </a>
+        <a class="btn ventas-page__primary" href="{% url 'editar_venta_fiada' obj.id %}">
+          <i class="bi bi-pencil" aria-hidden="true"></i>
+          Editar
+        </a>
+      </div>
+    </header>
+
+    <section class="venta-fiada-detail__amounts" aria-label="Resumen de montos">
+      <article class="venta-fiada-detail__amount-card">
+        <span>Monto fiado</span>
+        <strong>${{ obj.monto_fiado }}</strong>
+      </article>
+      <article class="venta-fiada-detail__amount-card">
+        <span>Total abonado</span>
+        <strong>${{ obj.abono_inicial }}</strong>
+      </article>
+      <article class="venta-fiada-detail__amount-card venta-fiada-detail__amount-card--balance">
+        <span>Saldo pendiente</span>
+        <strong>${{ saldo_pendiente }}</strong>
+      </article>
+    </section>
+
+    <div class="venta-fiada-detail__grid">
+      <section class="ventas-page__panel venta-fiada-detail__panel" aria-labelledby="fiada-client-title">
+        <div class="venta-fiada-detail__section-heading">
+          <span class="venta-fiada-detail__icon" aria-hidden="true"><i class="bi bi-person"></i></span>
+          <div>
+            <h2 id="fiada-client-title">Datos del cliente</h2>
+            <p>Información de contacto</p>
+          </div>
+        </div>
+        <dl class="venta-fiada-detail__data-grid">
+          <div>
+            <dt>Nombre</dt>
+            <dd>{{ obj.cliente_nombre }}</dd>
+          </div>
+          <div>
+            <dt>Teléfono</dt>
+            <dd>{{ obj.cliente_telefono|default:"No registrado" }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="ventas-page__panel venta-fiada-detail__panel" aria-labelledby="fiada-dates-title">
+        <div class="venta-fiada-detail__section-heading">
+          <span class="venta-fiada-detail__icon" aria-hidden="true"><i class="bi bi-calendar3"></i></span>
+          <div>
+            <h2 id="fiada-dates-title">Fechas y registro</h2>
+            <p>Plazo e información de creación</p>
+          </div>
+        </div>
+        <dl class="venta-fiada-detail__data-grid">
+          <div>
+            <dt>Fecha de la venta</dt>
+            <dd>{{ obj.fecha_venta|date:"d/m/Y" }}</dd>
+          </div>
+          <div>
+            <dt>Fecha acordada de pago</dt>
+            <dd>
+              {% if obj.fecha_vencimiento %}
+                {{ obj.fecha_vencimiento|date:"d/m/Y" }}
+              {% else %}
+                Sin fecha acordada
+              {% endif %}
+            </dd>
+          </div>
+          <div>
+            <dt>Registrado por</dt>
+            <dd>{{ obj.usuario.username }}</dd>
+          </div>
+          <div>
+            <dt>N.º de venta fiada</dt>
+            <dd>#{{ obj.id }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      {% if obj.venta %}
+      <section class="ventas-page__panel venta-fiada-detail__panel" aria-labelledby="fiada-sale-title">
+        <div class="venta-fiada-detail__section-heading">
+          <span class="venta-fiada-detail__icon" aria-hidden="true"><i class="bi bi-receipt"></i></span>
+          <div>
+            <h2 id="fiada-sale-title">Venta asociada</h2>
+            <p>Comprobante del punto de venta</p>
+          </div>
+        </div>
+        <a class="venta-fiada-detail__sale-link" href="{% url 'detalle_venta' obj.venta.id %}">
+          Ver Venta #{{ obj.venta.id }}
+          <span>${{ obj.venta.total_venta }}</span>
+          <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </section>
+      {% endif %}
+
+      <section class="ventas-page__panel venta-fiada-detail__panel" aria-labelledby="fiada-notes-title">
+        <div class="venta-fiada-detail__section-heading">
+          <span class="venta-fiada-detail__icon" aria-hidden="true"><i class="bi bi-card-text"></i></span>
+          <div>
+            <h2 id="fiada-notes-title">Observaciones</h2>
+            <p>Detalle adicional de la cuenta</p>
+          </div>
+        </div>
+        <p class="venta-fiada-detail__notes">
+          {{ obj.detalle|default:"Sin observaciones adicionales."|linebreaksbr }}
+        </p>
+      </section>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eliminar venta fiada | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Cuentas por cobrar</p>
+      <h1>Eliminar venta fiada</h1>
+      <p>Confirma si deseas eliminar este registro de venta fiada.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'lista_ventas_fiadas' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al listado
+    </a>
+  </header>
+
+  <section class="ventas-page__panel" aria-labelledby="confirmar-eliminar-fiada">
+    <h2 id="confirmar-eliminar-fiada" class="h5 fw-bold mb-3">Confirmación de eliminación</h2>
+
+    <div class="alert alert-warning" role="alert">
+      <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+      ¿Estás seguro de que deseas eliminar la venta fiada
+      <strong>#{{ obj.id }}</strong> de <strong>{{ obj.cliente_nombre }}</strong>
+      por un monto de <strong>${{ obj.monto_fiado }}</strong>?
+    </div>
+
+    <form method="post" class="d-flex flex-wrap gap-2 mt-3">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        Sí, eliminar registro
+      </button>
+      <a href="{% url 'lista_ventas_fiadas' %}" class="btn btn-outline-secondary">
+        Cancelar
+      </a>
+    </form>
+  </section>
+</div>
+{% endblock %}
