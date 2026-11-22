@@ -6,8 +6,24 @@
   const mobileQuery = window.matchMedia("(max-width: 900px)");
   const storageKey = "cm-sidebar-collapsed";
 
+  function syncSidebarPeek() {
+    const hasOpenGroup = Boolean(sidebar.querySelector(".cm-nav-group[open]"));
+    sidebar.classList.toggle(
+      "cm-sidebar-peek",
+      !mobileQuery.matches &&
+        body.classList.contains("cm-sidebar-collapsed") &&
+        hasOpenGroup,
+    );
+  }
+
   function setDesktopState(collapsed, save) {
     body.classList.toggle("cm-sidebar-collapsed", collapsed);
+    if (collapsed) {
+      sidebar.querySelectorAll(".cm-nav-group[open]").forEach(function (group) {
+        group.open = false;
+      });
+    }
+    syncSidebarPeek();
     toggle.setAttribute("aria-expanded", String(!collapsed));
     toggle.setAttribute(
       "aria-label",
@@ -27,6 +43,7 @@
       body.classList.remove("cm-sidebar-collapsed");
       toggle.setAttribute("aria-expanded", "false");
       toggle.setAttribute("aria-label", "Mostrar barra lateral");
+      syncSidebarPeek();
       return;
     }
 
@@ -65,8 +82,23 @@
     }
   });
 
+  sidebar.querySelectorAll(".cm-nav-group").forEach(function (group) {
+    group.addEventListener("toggle", function () {
+      if (group.open) {
+        sidebar.querySelectorAll(".cm-nav-group[open]").forEach(function (sibling) {
+          if (sibling !== group) {
+            sibling.open = false;
+          }
+        });
+      }
+      syncSidebarPeek();
+    });
+  });
+
   document
-    .querySelectorAll(".cm-nav-link, .cm-brand, .cm-logout")
+    .querySelectorAll(
+      ".cm-nav-link[href='#'], .cm-nav-sublink[href='#'], .cm-brand[href='#']",
+    )
     .forEach(function (link) {
       link.addEventListener("click", function (event) {
         event.preventDefault();
