@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Total de ventas | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ventas_totales.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="sales-total-page" aria-labelledby="sales-total-title">
+  <header class="sales-total-heading">
+    <div>
+      <p class="module-label">Estadísticas / Reportes</p>
+      <h1 id="sales-total-title">Total de ventas</h1>
+      <p>Consulta el total generado por ventas registradas.</p>
+    </div>
+
+    <a class="btn sales-secondary-button" href="/estadisticas/">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al panel
+    </a>
+  </header>
+
+  <section class="filters-panel" aria-labelledby="filter-title" data-active-period="{{ periodo }}">
+    <div class="filters-heading">
+      <div>
+        <h2 id="filter-title">Filtrar ventas</h2>
+        <p>Seleccione el período que desea consultar.</p>
+      </div>
+
+      <div class="period-tabs" role="group" aria-label="Tipo de período">
+        <button class="period-tab active" type="button" data-period="dia" aria-pressed="true">
+          Por día
+        </button>
+        <button class="period-tab" type="button" data-period="mes" aria-pressed="false">
+          Por mes
+        </button>
+        <button class="period-tab" type="button" data-period="anio" aria-pressed="false">
+          Por año
+        </button>
+      </div>
+    </div>
+
+    <form method="get" class="filters-form">
+      <div class="period-field" data-period-field="dia">
+        <label for="fecha-dia" class="form-label">Fecha</label>
+        <input id="fecha-dia" class="form-control" type="date" name="fecha"
+          value="{% if periodo == 'dia' and filtro_activo %}{{ filtro_activo|date:'Y-m-d' }}{% endif %}">
+      </div>
+
+      <div class="period-field d-none" data-period-field="mes">
+        <label for="fecha-mes" class="form-label">Mes</label>
+        <input id="fecha-mes" class="form-control" type="month" name="mes"
+          value="{% if periodo == 'mes' and filtro_activo %}{{ filtro_activo|date:'Y-m' }}{% endif %}">
+      </div>
+
+      <div class="period-field d-none" data-period-field="anio">
+        <label for="fecha-anio" class="form-label">Año</label>
+        <input id="fecha-anio" class="form-control" type="number" name="anio"
+          min="2000" max="2100" placeholder="Ej. 2026"
+          value="{% if periodo == 'anio' %}{{ filtro_activo|default:'' }}{% endif %}">
+      </div>
+
+      <button class="btn filter-button" type="submit">
+        <i class="bi bi-funnel" aria-hidden="true"></i>
+        Aplicar filtro
+      </button>
+    </form>
+  </section>
+
+  <section class="sales-result-grid" aria-label="Resultados de ventas">
+    <article class="sales-result-card sales-result-primary">
+      <span class="result-icon" aria-hidden="true">
+        <i class="bi bi-cash-coin"></i>
+      </span>
+      <div>
+        <span class="result-label">Total de ventas</span>
+        <strong class="result-value">{{ total_ventas|default:"-" }}</strong>
+      </div>
+    </article>
+
+    <article class="sales-result-card">
+      <span class="result-icon result-icon-secondary" aria-hidden="true">
+        <i class="bi bi-receipt"></i>
+      </span>
+      <div>
+        <span class="result-label">Cantidad de ventas</span>
+        <strong class="result-value">{{ cantidad_ventas|default:"-" }}</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="sales-detail-panel" aria-labelledby="sales-detail-title">
+    <div class="sales-detail-heading">
+      <div>
+        <h2 id="sales-detail-title">Detalle de ventas</h2>
+        <p>Resultados del período seleccionado.</p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table sales-detail-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Venta</th>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Medio de pago</th>
+            <th scope="col" class="text-end">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venta in ventas %}
+          <tr>
+            <td><strong>#{{ venta.id }}</strong></td>
+            <td>{{ venta.fecha_hora|date:"d/m/Y H:i"|default:"-" }}</td>
+            <td>{{ venta.get_medio_pago_display|default:"-" }}</td>
+            <td class="text-end">${{ venta.total_venta|default:"0" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <h2>Sin ventas en el período</h2>
+                <p>Seleccione un día o mes para consultar las ventas.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/ventas_totales.js' %}" defer></script>
+{% endblock %}

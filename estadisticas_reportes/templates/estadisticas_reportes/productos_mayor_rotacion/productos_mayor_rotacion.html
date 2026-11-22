@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Productos con mayor rotación | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos_mayor_rotacion.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="rotation-page" aria-labelledby="rotation-title">
+  <header class="rotation-heading">
+    <div>
+      <p class="module-label">Control de inventario</p>
+      <h1 id="rotation-title">Productos con mayor rotación</h1>
+      <p>Consulta los productos con mayor frecuencia de venta y optimiza las reposiciones.</p>
+    </div>
+
+    <a class="btn rotation-secondary-button" href="/estadisticas/">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al panel
+    </a>
+  </header>
+
+  <section class="rotation-panel" aria-labelledby="ranking-title">
+    <div class="panel-heading">
+      <div>
+        <h2 id="ranking-title">Ranking de productos</h2>
+        <p>Basado en las ventas registradas en el sistema.</p>
+      </div>
+
+      <label class="rotation-search" for="rotation-search">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span class="visually-hidden">Buscar producto</span>
+        <input id="rotation-search" type="search" placeholder="Buscar producto" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table rotation-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Código</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Categoría</th>
+            <th scope="col" class="text-center">Unidades vendidas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+          <tr class="rotation-row"
+              data-search="{{ producto.producto__codigo_barras }} {{ producto.producto__nombre }} {{ producto.producto__categoria__nombre }}">
+            <td><strong>{{ producto.producto__codigo_barras|default:"-" }}</strong></td>
+            <td>{{ producto.producto__nombre|default:"-" }}</td>
+            <td>{{ producto.producto__categoria__nombre|default:"-" }}</td>
+            <td class="text-center">
+              {{ producto.unidades_vendidas|default:"0" }}
+            </td>
+          </tr>
+          {% empty %}
+          <tr id="empty-state">
+            <td colspan="4">
+              <div class="empty-state">
+                <i class="bi bi-box-seam" aria-hidden="true"></i>
+                <h2>No hay datos de rotación</h2>
+                <p>Los productos aparecerán según las ventas registradas.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <p id="rotation-empty-state" class="rotation-empty-state d-none" role="status">
+      No existen productos que coincidan con la búsqueda.
+    </p>
+  </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/productos_mayor_rotacion.js' %}" defer></script>
+{% endblock %}

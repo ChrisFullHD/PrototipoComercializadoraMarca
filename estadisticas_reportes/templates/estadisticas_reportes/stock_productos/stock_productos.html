@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stock de productos | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/stock_productos.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="stock-page" aria-labelledby="stock-title">
+  <header class="stock-heading">
+    <div>
+      <p class="module-label">Estadísticas / Inventario</p>
+      <h1 id="stock-title">Stock de productos</h1>
+      <p>Consulta las unidades y cantidades disponibles en inventario.</p>
+    </div>
+
+    <a class="btn stock-secondary-button" href="{% url 'panel_estadisticas' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al panel
+    </a>
+  </header>
+
+  <section class="stock-metrics" aria-label="Resumen del stock">
+    <article class="stock-metric-card">
+      <span class="stock-metric-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+      <div>
+        <span class="stock-metric-label">Productos registrados</span>
+        <strong>{{ total_productos|default:"0" }}</strong>
+      </div>
+    </article>
+    <article class="stock-metric-card">
+      <span class="stock-metric-icon"><i class="bi bi-boxes" aria-hidden="true"></i></span>
+      <div>
+        <span class="stock-metric-label">Unidades disponibles</span>
+        <strong>{{ total_unidades|default:"0" }}</strong>
+      </div>
+    </article>
+    <article class="stock-metric-card">
+      <span class="stock-metric-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
+      <div>
+        <span class="stock-metric-label">Cantidad por peso</span>
+        <strong>{{ total_kg|default:"0"|floatformat:2 }} kg</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="stock-panel" aria-labelledby="stock-list-title">
+    <div class="stock-panel-heading">
+      <div>
+        <h2 id="stock-list-title">Inventario disponible</h2>
+        <p>Los niveles bajos muestran cinco unidades o menos.</p>
+      </div>
+
+      <div class="stock-controls">
+        <div class="stock-tabs" role="group" aria-label="Filtrar stock">
+          <button class="stock-tab active" type="button" data-stock-filter="todos" aria-pressed="true">Todos</button>
+          <button class="stock-tab" type="button" data-stock-filter="bajo" aria-pressed="false">Stock bajo</button>
+        </div>
+
+        <label class="stock-search" for="stock-search">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <span class="visually-hidden">Buscar producto</span>
+          <input id="stock-search" type="search" placeholder="Buscar producto" autocomplete="off">
+        </label>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table stock-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Código</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Categoría</th>
+            <th scope="col" class="text-center">Unidades</th>
+            <th scope="col" class="text-center">Por peso</th>
+            <th scope="col" class="text-center">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+          <tr class="stock-row"
+              data-search="{{ producto.codigo_barras }} {{ producto.nombre }} {{ producto.categoria }}"
+              data-low-stock="{% if producto.unidades_stock <= 5 %}true{% else %}false{% endif %}">
+            <td><strong>{{ producto.codigo_barras|default:"-" }}</strong></td>
+            <td>{{ producto.nombre|default:"-" }}</td>
+            <td>{{ producto.categoria|default:"-" }}</td>
+            <td class="text-center">{{ producto.unidades_stock|default:"0" }}</td>
+            <td class="text-center">{{ producto.stock_kg|default:"0"|floatformat:2 }} kg</td>
+            <td class="text-center">
+              {% if producto.unidades_stock == 0 %}
+              <span class="stock-badge stock-badge-empty">Agotado</span>
+              {% elif producto.unidades_stock <= 5 %}
+              <span class="stock-badge stock-badge-low">Stock bajo</span>
+              {% else %}
+              <span class="stock-badge stock-badge-ok">Disponible</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr id="empty-state">
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="bi bi-box-seam" aria-hidden="true"></i>
+                <h2>No hay productos registrados</h2>
+                <p>Los productos aparecerán cuando existan en el inventario.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <p id="stock-empty-state" class="stock-empty-state d-none" role="status">
+      No existen productos que coincidan con el filtro.
+    </p>
+  </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/stock_productos.js' %}" defer></script>
+{% endblock %}
