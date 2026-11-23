@@ -1,0 +1,219 @@
+:root {
+  --stat-green: #54785a;
+  --stat-green-soft: #edf4ec;
+}
+
+.statistics-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.statistics-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.module-label {
+  margin: 0 0 5px;
+  color: var(--stat-green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.statistics-heading h1 {
+  margin: 0 0 7px;
+  color: var(--cm-texto);
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  font-weight: 800;
+}
+
+.statistics-heading p:last-child {
+  margin: 0;
+  color: var(--cm-texto-suave);
+}
+
+.statistics-secondary-button,
+.filter-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--cm-texto);
+  background: var(--cm-blanco);
+  border: 1px solid var(--cm-borde);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.statistics-secondary-button:hover,
+.statistics-secondary-button:focus-visible {
+  color: var(--cm-texto);
+  background: var(--cm-crema);
+  border-color: #d3c4ac;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 260px));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-card {
+  min-height: 94px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 17px;
+  background: var(--cm-blanco);
+  border: 1px solid var(--cm-borde);
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(77, 58, 31, .05);
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  flex: 0 0 48px;
+  place-items: center;
+  color: var(--stat-green);
+  background: var(--stat-green-soft);
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.metric-icon-secondary {
+  color: #806000;
+  background: #fff2cc;
+}
+
+.metric-card div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.metric-label {
+  color: var(--cm-texto-suave);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.metric-value {
+  color: var(--cm-texto);
+  font-size: 24px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.chart-panel {
+  overflow: hidden;
+  background: var(--cm-blanco);
+  border: 1px solid var(--cm-borde);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(77, 58, 31, .07);
+}
+
+.chart-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--cm-borde);
+}
+
+.chart-label {
+  margin: 0 0 3px;
+  color: var(--stat-green);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.chart-heading h2 {
+  margin: 0;
+  color: var(--cm-texto);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.chart-placeholder-label {
+  color: var(--cm-texto-suave);
+  font-size: 11px;
+}
+
+.chart-placeholder {
+  min-height: 390px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px;
+  color: var(--cm-texto-suave);
+  background:
+    linear-gradient(rgba(51, 45, 37, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(51, 45, 37, .045) 1px, transparent 1px),
+    var(--cm-crema);
+  background-size: 32px 32px;
+  border: 1px dashed var(--cm-borde);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chart-placeholder i {
+  font-size: 34px;
+  color: var(--stat-green);
+}
+
+.chart-placeholder canvas {
+  width: 100% !important;
+  height: 350px !important;
+}
+
+.statistics-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .statistics-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chart-placeholder {
+    min-height: 280px;
+    margin: 12px;
+  }
+
+  .statistics-secondary-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Estadísticas / Reportes | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/estadisticas.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="statistics-page" aria-labelledby="statistics-title">
+  <header class="statistics-heading">
+    <div>
+      <p class="module-label">Estadísticas / Reportes</p>
+      <h1 id="statistics-title">Panel de estadísticas</h1>
+      <p>Resumen visual y monetario de las ventas registradas.</p>
+    </div>
+
+    <a class="btn statistics-secondary-button" href="/estadisticas/ventas/">
+      <i class="bi bi-currency-dollar" aria-hidden="true"></i>
+      Ver total de ventas
+    </a>
+  </header>
+
+  <section class="metrics-grid" aria-label="Indicadores principales">
+    <article class="metric-card">
+      <span class="metric-icon" aria-hidden="true">
+        <i class="bi bi-cash-coin"></i>
+      </span>
+      <div>
+        <span class="metric-label">Recaudado hoy</span>
+        <strong class="metric-value">{{ total_ventas|default:"-" }}</strong>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <span class="metric-icon metric-icon-secondary" aria-hidden="true">
+        <i class="bi bi-receipt"></i>
+      </span>
+      <div>
+        <span class="metric-label">Transacciones</span>
+        <strong class="metric-value">{{ cantidad_ventas|default:"-" }}</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="chart-panel" aria-labelledby="chart-title">
+    <div class="chart-heading">
+      <div>
+        <p class="chart-label">Comportamiento de productos</p>
+        <h2 id="chart-title">Productos con mayor rotación</h2>
+      </div>
+      <span class="chart-placeholder-label">Unidades vendidas</span>
+    </div>
+
+    <div class="chart-placeholder" id="ventas-chart" aria-label="Gráfico de productos con mayor rotación">
+      <canvas id="productos-rotacion-chart"></canvas>
+    </div>
+  </section>
+
+  {{ productos_labels|json_script:"productos-labels" }}
+  {{ productos_valores|json_script:"productos-valores" }}
+
+  <div class="statistics-actions">
+    <a class="btn statistics-secondary-button" href="/estadisticas/rotacion/">
+      <i class="bi bi-trophy" aria-hidden="true"></i>
+      Productos con mayor rotación
+    </a>
+    <a class="btn statistics-secondary-button" href="{% url 'stock_productos' %}">
+      <i class="bi bi-boxes" aria-hidden="true"></i>
+      Stock de productos
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/chart.umd.min.js' %}" defer></script>
+<script src="{% static 'scripts/estadisticas.js' %}" defer></script>
+{% endblock %}
