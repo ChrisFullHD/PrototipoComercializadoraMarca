@@ -1,0 +1,35 @@
+{% load static %} {% load crispy_forms_tags %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Iniciar sesión | Comercializadora Marca</title>
+    <link
+      rel="stylesheet"
+      href="{% static 'css/bootstrap/bootstrap.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  </head>
+  <body class="login-page">
+    <main class="login-card">
+      <header class="login-brand" aria-label="Comercializadora Marca">
+        <span class="login-brand-mark" aria-hidden="true">M</span>
+        <span class="login-brand-name">
+          <span>COMERCIALIZADORA</span>
+          <strong>MARCA</strong>
+        </span>
+      </header>
+      <section class="login-content">
+        <h1>Iniciar sesión</h1>
+        <p class="login-subtitle">Ingresa tus datos para continuar.</p>
+        <form method="post" id="formulario-login">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}" />
+          {{ form|crispy }}
+          <button class="login-submit" type="submit">Iniciar sesión</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventario de productos{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/inventario.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="inventory-page">
+  {% if user.is_authenticated %}
+    <nav class="inventory-shortcuts" aria-label="Catálogos de inventario">
+      <a href="{% url 'lista_categorias' %}">
+        <i class="bi bi-tags" aria-hidden="true"></i> Lista de categorías
+      </a>
+      <a href="{% url 'lista_lotes' %}">
+        <i class="bi bi-boxes" aria-hidden="true"></i> Lista de lotes
+      </a>
+    </nav>
+
+    <header class="inventory-heading">
+      <div class="inventory-heading-icon" aria-hidden="true">
+        <i class="bi bi-box-seam"></i>
+      </div>
+      <div>
+        <h1>Inventario de productos</h1>
+        <p>Productos unitarios y sus instancias en stock.</p>
+      </div>
+    </header>
+
+    <section class="inventory-section" aria-labelledby="productos-unitarios-heading">
+      <div class="inventory-section-heading">
+        <div>
+          <h2 id="productos-unitarios-heading">Producto unitario</h2>
+          <p>Catálogo de productos, precios y stock total</p>
+        </div>
+        <a class="inventory-add-button" href="{% url 'producto_crear' %}">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar producto
+        </a>
+      </div>
+      <div class="inventory-table-wrap">
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th scope="col">Código de barras</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Stock (unidades)</th>
+              <th scope="col">Peso (KG, L)</th>
+              <th scope="col">Compra</th>
+              <th scope="col">Venta</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in producto_unitario %}
+              <tr>
+                <td>{{ producto.codigo_barras }}</td>
+                <td>
+                  {% if producto.imagen %}
+                    <img class="inventory-product-image" src="{{ producto.imagen.url }}" alt="" />
+                  {% endif %}
+                  <span class="inventory-product-name">{{ producto.nombre }}</span>
+                </td>
+                <td>{{ producto.categoria.nombre }}</td>
+                <td>{{ producto.unidades_stock }}</td>
+                <td>{{ producto.peso_kg }}</td>
+                <td>${{ producto.precio_compra_unidad }}</td>
+                <td>${{ producto.precio_venta_unidad }}</td>
+                <td>
+                  <div class="inventory-row-actions">
+                    <a class="inventory-icon-button" href="{% url 'producto_editar' pk=producto.pk %}" aria-label="Modificar {{ producto.nombre }}" title="Modificar">
+                      <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a class="inventory-icon-button inventory-delete-link" href="{% url 'producto_eliminar' pk=producto.pk %}" aria-label="Eliminar {{ producto.nombre }}" title="Eliminar">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td class="inventory-empty" colspan="8">Todavía no hay productos unitarios registrados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="inventory-section" aria-labelledby="instancias-unitarias-heading">
+      <div class="inventory-section-heading">
+        <div>
+          <h2 id="instancias-unitarias-heading">Lotes de productos envasados (unitarios)</h2>
+          <p>Productos mostrados por cada lote que hay dentro del inventario</p>
+        </div>
+        <a class="inventory-add-button" href="{% url 'instancia_unitaria_crear' %}">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar instancia
+        </a>
+      </div>
+      <div class="inventory-table-wrap">
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th scope="col">Producto</th>
+              <th scope="col">Código de barras</th>
+              <th scope="col">Lote</th>
+              <th scope="col">Vencimiento</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for instancia in instancias_producto_unitario %}
+              <tr>
+                <td>{{ instancia.producto.nombre }}</td>
+                <td>{{ instancia.producto.codigo_barras }}</td>
+                <td>{{ instancia.lote.numero_lote }}</td>
+                <td>{{ instancia.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                <td>
+                  <div class="inventory-row-actions">
+                    <a class="inventory-icon-button" href="{% url 'instancia_unitaria_editar' pk=instancia.pk %}" aria-label="Modificar instancia de {{ instancia.producto.nombre }}" title="Modificar">
+                      <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a class="inventory-icon-button inventory-delete-link" href="{% url 'instancia_unitaria_eliminar' pk=instancia.pk %}" aria-label="Eliminar instancia de {{ instancia.producto.nombre }}" title="Eliminar">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td class="inventory-empty" colspan="5">Todavía no hay instancias unitarias registradas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="inventory-section" aria-labelledby="instancias-peso-heading">
+      <div class="inventory-section-heading">
+        <div>
+          <h2 id="instancias-peso-heading">Instancias de Productos vendidos por peso</h2>
+          <p>Unidades abiertas o en vitrina que están siendo vendidas</p>
+        </div>
+        <a class="inventory-add-button" href="{% url 'instancia_peso_crear' %}">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar instancia
+        </a>
+      </div>
+      <div class="inventory-table-wrap">
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th scope="col">Producto</th>
+              <th scope="col">Código de barras</th>
+              <th scope="col">Lote</th>
+              <th scope="col">Vencimiento</th>
+              <th scope="col">Cantidad (kg)</th>
+              <th scope="col">Precio/kg</th>
+              <th scope="col">Merma (kg)</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for instancia in instancias_producto_peso %}
+              <tr>
+                <td>{{ instancia.producto.nombre }}</td>
+                <td>{{ instancia.producto.codigo_barras }}</td>
+                <td>{{ instancia.lote.numero_lote }}</td>
+                <td>{{ instancia.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                <td>{{ instancia.cantidad_kg }}</td>
+                <td>${{ instancia.precio_kg }}</td>
+                <td>{{ instancia.merma_acumulada_kg }}</td>
+                <td>
+                  <div class="inventory-row-actions">
+                    <a class="inventory-icon-button" href="{% url 'instancia_peso_editar' pk=instancia.pk %}" aria-label="Modificar instancia por peso de {{ instancia.producto.nombre }}" title="Modificar">
+                      <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a class="inventory-icon-button inventory-delete-link" href="{% url 'instancia_peso_eliminar' pk=instancia.pk %}" aria-label="Eliminar instancia por peso de {{ instancia.producto.nombre }}" title="Eliminar">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td class="inventory-empty" colspan="8">Todavía no hay instancias por peso registradas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% else %}
+    <p>Inicia sesión para consultar el inventario.</p>
+  {% endif %}
+</div>
+{% endblock %}

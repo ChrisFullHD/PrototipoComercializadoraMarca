@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eliminar venta #{{ obj.id }} | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Gestión comercial</p>
+      <h1>Eliminar venta</h1>
+      <p>Confirma si deseas eliminar este registro de venta.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'lista_ventas' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al historial
+    </a>
+  </header>
+
+  <section class="ventas-page__panel" aria-labelledby="confirmar-eliminar-venta">
+    <h2 id="confirmar-eliminar-venta" class="h5 fw-bold mb-3">Confirmación de eliminación</h2>
+
+    <div class="alert alert-warning" role="alert">
+      <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+      ¿Estás seguro de que deseas eliminar la <strong>Venta #{{ obj.id }}</strong> registrada el
+      <strong>{{ obj.fecha_hora|date:"d/m/Y H:i" }}</strong> por un total de <strong>${{ obj.total_venta }}</strong>?
+    </div>
+
+    <form method="post" class="d-flex flex-wrap gap-2 mt-3">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        Sí, eliminar venta
+      </button>
+      <a href="{% url 'detalle_venta' obj.id %}" class="btn btn-outline-secondary">
+        Cancelar
+      </a>
+    </form>
+  </section>
+</div>
+{% endblock %}

@@ -1,3 +1,200 @@
-<ul class="navbar-nav">
-  <!-- cada integrante agrega aqui el enlace de su app -->
-</ul>
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Comercializadora Marca{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons/bootstrap-icons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body class="cm-app-shell">
+    <button
+      class="cm-sidebar-toggle"
+      type="button"
+      aria-controls="cm-sidebar"
+      aria-expanded="true"
+      aria-label="Ocultar barra lateral"
+    >
+      <i
+        class="bi bi-chevron-left cm-sidebar-toggle-icon"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <div class="cm-sidebar-backdrop" aria-hidden="true"></div>
+
+    <aside class="cm-sidebar" id="cm-sidebar" aria-label="Navegación principal">
+      <a class="cm-brand" href="#" aria-label="Comercializadora Marca, inicio">
+        <span class="cm-brand-mark" aria-hidden="true">M</span>
+        <span class="cm-brand-name">
+          <span>COMERCIALIZADORA</span>
+          <strong>MARCA</strong>
+        </span>
+      </a>
+
+      <div class="cm-user-card">
+        <span class="cm-user-avatar" aria-hidden="true">
+          {% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}U{% endif %}
+        </span>
+        <span class="cm-user-info">
+          {% if user.is_authenticated %}
+            <strong>{{ user.get_full_name|default:user.username }}</strong>
+            <span>{{ user.perfil.rol.nombre|default:"Usuario" }}</span>
+          {% else %}
+            <strong>Invitado</strong>
+            <span>Sesión no iniciada</span>
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="cm-nav-scroll">
+        <section class="cm-nav-section">
+          <h2 class="cm-nav-title">Secciones</h2>
+          <nav aria-label="Secciones del sistema">
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-box-seam"></i></span>
+                <span class="cm-nav-label">Productos</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_productos' %}">Listado de productos</a>
+              </div>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_lotes' %}">Listado de lotes</a>
+              </div>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_categorias' %}">Listado de categorías</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
+                <span class="cm-nav-label">Ventas / Fiados</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_ventas' %}">Listado de ventas</a>
+                <a class="cm-nav-sublink" href="{% url 'registrar_venta' %}">Registrar venta</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_ventas_fiadas' %}">Listado de ventas fiadas</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-arrow-counterclockwise"></i></span>
+                <span class="cm-nav-label">Devoluciones / Bajas</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_devoluciones' %}">Devoluciones</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_bajas' %}">Bajas</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-bell"></i></span>
+                <span class="cm-nav-label">Notificaciones</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="#">Centro de notificaciones</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-building"></i></span>
+                <span class="cm-nav-label">Proveedores</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_proveedores' %}">Listado de proveedores</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-bar-chart-line"></i></span>
+                <span class="cm-nav-label">Estadísticas / Reportes</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'panel_estadisticas' %}">Panel de estadísticas</a>
+                <a class="cm-nav-sublink" href="{% url 'ventas_totales' %}">Ventas totales</a>
+                <a class="cm-nav-sublink" href="{% url 'productos_mayor_rotacion' %}">Mayor rotación</a>
+                <a class="cm-nav-sublink" href="{% url 'stock_productos' %}">Stock de productos</a>
+                <a class="cm-nav-sublink" href="#">Reportes</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-receipt"></i></span>
+                <span class="cm-nav-label">Facturas</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="#">Listado de facturas</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
+                <span class="cm-nav-label">Usuarios</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'lista_usuarios' %}">Listado de usuarios</a>
+              </div>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="{% url 'crear_usuario' %}">Crear usuario</a>
+              </div>
+            </details>
+            <details class="cm-nav-group">
+              <summary class="cm-nav-link cm-nav-summary">
+                <span class="cm-nav-icon" aria-hidden="true"><i class="bi bi-cloud-arrow-down"></i></span>
+                <span class="cm-nav-label">Respaldos</span>
+                <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="cm-nav-sublist">
+                <a class="cm-nav-sublink" href="#">Listado de respaldos</a>
+              </div>
+            </details>
+          </nav>
+        </section>
+      </div>
+
+      {% if user.is_authenticated %}
+        <form class="cm-logout-form" method="post" action="{% url 'cerrar_sesion' %}">
+          {% csrf_token %}
+          <button class="cm-logout" type="submit" aria-label="Cerrar sesión">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            <span>Cerrar sesión</span>
+          </button>
+        </form>
+      {% endif %}
+    </aside>
+
+    <main class="main-content" id="main-content">
+      {% if messages %}
+        <div class="container-fluid px-0">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}
+      <header class="demo-header card border-0">
+        <p>Área principal</p>
+        <h1>Comercializadora Marca</h1>
+      </header>
+      {% endblock %}
+    </main>
+
+    <script src="{% static 'scripts/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'scripts/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

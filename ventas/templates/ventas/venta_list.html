@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ventas | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Gestión comercial</p>
+      <h1>Historial de ventas</h1>
+      <p>Consulta las ventas registradas y accede rápidamente al punto de venta o ventas fiadas.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'lista_ventas_fiadas' %}">
+        <i class="bi bi-journal-text" aria-hidden="true"></i>
+        Ventas fiadas
+      </a>
+      <a class="btn ventas-page__primary" href="{% url 'registrar_venta' %}">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+        Registrar venta
+      </a>
+    </div>
+  </header>
+
+  <section class="ventas-page__panel" aria-labelledby="ventas-list-title">
+    <div class="ventas-page__toolbar">
+      <div>
+        <h2 id="ventas-list-title">Registro de ventas</h2>
+        <p>Total recaudado en resultados: <strong>${{ total_recaudado }}</strong></p>
+      </div>
+
+      <form method="get" class="ventas-page__search" role="search">
+        <label class="visually-hidden" for="ventas-search">Buscar venta</label>
+        <input
+          class="form-control"
+          id="ventas-search"
+          type="search"
+          name="q"
+          value="{{ q }}"
+          placeholder="Buscar por N°, producto, código o usuario..."
+        >
+        <button class="btn ventas-page__search-button" type="submit" aria-label="Buscar">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="ventas-page__table-wrap">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">N.º Venta</th>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Vendedor</th>
+            <th scope="col">Productos</th>
+            <th scope="col">Medio de pago</th>
+            <th scope="col">Total</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in ventas %}
+          <tr>
+            <td class="fw-bold">#{{ v.id }}</td>
+            <td>{{ v.fecha_hora|date:"d/m/Y H:i" }}</td>
+            <td>{{ v.usuario.username }}</td>
+            <td>{{ v.detalles.count }} ítem(s)</td>
+            <td><span class="ventas-page__tag">{{ v.get_medio_pago_display }}</span></td>
+            <td class="fw-bold">${{ v.total_venta }}</td>
+            <td>
+              <div class="ventas-page__actions">
+                <a
+                  href="{% url 'detalle_venta' v.id %}"
+                  class="btn ventas-page__action ventas-page__action--detail"
+                  title="Ver detalle"
+                  aria-label="Ver detalle de la venta #{{ v.id }}"
+                >
+                  <i class="bi bi-eye" aria-hidden="true"></i>
+                </a>
+          
+                <a
+                  href="{% url 'eliminar_venta' v.id %}"
+                  class="btn ventas-page__action"
+                  title="Eliminar"
+                  aria-label="Eliminar venta #{{ v.id }}"
+                >
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="ventas-page__empty">
+              {% if q %}
+              No se encontraron ventas que coincidan con la búsqueda.
+              {% else %}
+              Aún no hay ventas registradas.
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lotes de inventario{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/inventario.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="inventory-page">
+  <nav class="inventory-shortcuts" aria-label="Navegación de inventario">
+    <a href="{% url 'lista_productos' %}"><i class="bi bi-box-seam" aria-hidden="true"></i> Productos</a>
+    <a href="{% url 'lista_categorias' %}"><i class="bi bi-tags" aria-hidden="true"></i> Categorías</a>
+  </nav>
+  <header class="inventory-heading">
+    <div class="inventory-heading-icon" aria-hidden="true"><i class="bi bi-boxes"></i></div>
+    <div class="inventory-heading-copy">
+      <h1>Lotes</h1>
+      <p>Lotes y fechas de vencimiento registrados.</p>
+    </div>
+    <a class="inventory-add-button" href="{% url 'lote_crear' %}">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar lote
+    </a>
+  </header>
+  <section class="inventory-section">
+    <div class="inventory-table-wrap">
+      <table class="inventory-table">
+        <thead>
+          <tr>
+            <th scope="col">Número/código</th>
+            <th scope="col">Fecha de vencimiento</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lote in lotes %}
+            <tr>
+              <td>{{ lote.numero_lote }}</td>
+              <td>{{ lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+              <td>
+                <div class="inventory-row-actions">
+                  <a class="inventory-icon-button" href="{% url 'lote_editar' pk=lote.pk %}" aria-label="Modificar lote {{ lote.numero_lote }}" title="Modificar">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </a>
+                  <a class="inventory-icon-button inventory-delete-link" href="{% url 'lote_eliminar' pk=lote.pk %}" aria-label="Eliminar lote {{ lote.numero_lote }}" title="Eliminar">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td class="inventory-empty" colspan="3">No hay lotes registrados.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

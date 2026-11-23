@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalle venta #{{ venta.id }} | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Gestión comercial</p>
+      <h1>Detalle de venta #{{ venta.id }}</h1>
+      <p>Registrada el {{ venta.fecha_hora|date:"d/m/Y H:i" }} por {{ venta.usuario.username }}.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'lista_ventas' %}">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+        Volver al historial
+      </a>
+      <a class="btn ventas-page__primary" href="{% url 'registrar_venta' %}">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+        Nueva venta
+      </a>
+      <a class="btn btn-outline-danger" href="{% url 'eliminar_venta' venta.id %}">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        Eliminar venta
+      </a>
+    </div>
+  </header>
+
+  <section class="ventas-page__panel mb-4" aria-labelledby="resumen-venta-detalle">
+    <h2 id="resumen-venta-detalle" class="h5 fw-bold mb-3">Información general</h2>
+    <div class="row g-3">
+      <div class="col-12 col-md-3">
+        <div class="text-secondary small">N.º de venta</div>
+        <div class="fw-bold">#{{ venta.id }}</div>
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="text-secondary small">Fecha y hora</div>
+        <div class="fw-semibold">{{ venta.fecha_hora|date:"d/m/Y H:i" }}</div>
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="text-secondary small">Medio de pago</div>
+        <div><span class="ventas-page__tag">{{ venta.get_medio_pago_display }}</span></div>
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="text-secondary small">Total de la venta</div>
+        <div class="fw-bold fs-5">${{ venta.total_venta }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ventas-page__panel" aria-labelledby="detalle-items-title">
+    <div class="ventas-page__toolbar">
+      <div>
+        <h2 id="detalle-items-title">Productos incluidos en la venta</h2>
+        <p>Desglose por unidad y por peso</p>
+      </div>
+    </div>
+
+    <div class="ventas-page__table-wrap">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Código</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Cantidad / Peso</th>
+            <th scope="col">Precio aplicado</th>
+            <th scope="col" class="text-end">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for det in venta.detalles.all %}
+          <tr>
+            <td><code>{{ det.producto.codigo_barras }}</code></td>
+            <td class="fw-semibold">{{ det.producto.nombre }}</td>
+            <td>{{ det.get_tipo_item_display }}</td>
+            <td>
+              {% if det.tipo_item == 'PES' %}
+                {{ det.cantidad_kg }} kg
+                {% if det.instancia_peso %}
+                  <span class="text-secondary small">(Lote {{ det.instancia_peso.lote.numero_lote }})</span>
+                {% endif %}
+              {% else %}
+                {{ det.cantidad_unidades }} unidad(es)
+              {% endif %}
+            </td>
+            <td>
+              ${{ det.precio_unitario }}{% if det.tipo_item == 'PES' %} / kg{% endif %}
+            </td>
+            <td class="text-end fw-bold">${{ det.subtotal }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="ventas-page__empty">
+              Esta venta no tiene productos detallados.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

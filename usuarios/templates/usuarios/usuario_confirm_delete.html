@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Eliminar usuario{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/usuarios.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="inventory-form-card">
+  <h1>Eliminar usuario</h1>
+  <p>¿Seguro que quieres eliminar la cuenta <strong>{{ obj.username }}</strong>? También se eliminará su perfil y esta acción no se puede deshacer.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="inventory-form-actions">
+      <button class="inventory-delete-button" type="submit">Eliminar</button>
+      <a class="inventory-cancel-button" href="{% url cancel_url %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/usuarios.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="inventory-form-card">
+  <h1>{{ page_title }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="inventory-form-actions">
+      <button class="inventory-add-button" type="submit">Guardar</button>
+      <a class="inventory-cancel-button" href="{% url cancel_url %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
