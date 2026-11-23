@@ -163,6 +163,11 @@
         <aside class="ventas-page__panel" aria-labelledby="resumen-venta-title">
           <h2 id="resumen-venta-title" class="mb-3">Resumen de la venta</h2>
 
+          <h3 class="h6 fw-semibold">Productos seleccionados</h3>
+          <ul id="resumenProductos" class="list-group list-group-flush mb-3">
+            <li class="list-group-item text-secondary px-0">No hay productos seleccionados.</li>
+          </ul>
+
           <div class="mb-3">
             <label for="id_medio_pago" class="form-label fw-semibold">Medio de pago</label>
             <select name="medio_pago" id="id_medio_pago" class="form-select">
@@ -273,6 +278,7 @@
     const filasUnidad = document.querySelectorAll('.fila-unidad');
     const filasPeso = document.querySelectorAll('.fila-peso');
     const totalDisplay = document.getElementById('totalVentaDisplay');
+    const resumenProductos = document.getElementById('resumenProductos');
     const medioPagoSelect = document.getElementById('id_medio_pago');
     const bloqueFiado = document.getElementById('bloqueDatosFiado');
     const inputClienteNombre = document.getElementById('id_cliente_nombre');
@@ -281,8 +287,36 @@
       return '$' + Math.round(valor).toLocaleString('es-CL');
     }
 
+    function agregarProductoAlResumen(nombre, cantidad, subtotal) {
+      const item = document.createElement('li');
+      item.className = 'list-group-item px-0';
+
+      const fila = document.createElement('div');
+      fila.className = 'd-flex justify-content-between align-items-start gap-2';
+
+      const descripcion = document.createElement('div');
+      const nombreProducto = document.createElement('div');
+      nombreProducto.className = 'fw-semibold';
+      nombreProducto.textContent = nombre;
+
+      const cantidadProducto = document.createElement('small');
+      cantidadProducto.className = 'text-secondary';
+      cantidadProducto.textContent = cantidad;
+
+      const precio = document.createElement('strong');
+      precio.className = 'text-nowrap';
+      precio.textContent = formatCLP(subtotal);
+
+      descripcion.append(nombreProducto, cantidadProducto);
+      fila.append(descripcion, precio);
+      item.appendChild(fila);
+      resumenProductos.appendChild(item);
+    }
+
     function recalcularTotales() {
       let total = 0;
+      let productosSeleccionados = 0;
+      resumenProductos.replaceChildren();
 
       filasUnidad.forEach((fila) => {
         const precio = parseFloat(fila.dataset.precio || '0');
@@ -291,6 +325,12 @@
         const subtotal = cant > 0 ? precio * cant : 0;
         fila.querySelector('.subtotal-unidad').textContent = formatCLP(subtotal);
         total += subtotal;
+
+        if (cant > 0) {
+          const nombre = fila.querySelector('td:nth-child(2)').textContent.trim();
+          agregarProductoAlResumen(nombre, `${cant} unidad(es)`, subtotal);
+          productosSeleccionados += 1;
+        }
       });
 
       filasPeso.forEach((fila) => {
@@ -300,7 +340,21 @@
         const subtotal = kg > 0 ? precioKg * kg : 0;
         fila.querySelector('.subtotal-peso').textContent = formatCLP(subtotal);
         total += subtotal;
+
+        if (kg > 0) {
+          const nombre = fila.querySelector('td').textContent.trim();
+          const cantidad = `${kg.toLocaleString('es-CL', { maximumFractionDigits: 4 })} kg`;
+          agregarProductoAlResumen(nombre, cantidad, subtotal);
+          productosSeleccionados += 1;
+        }
       });
+
+      if (productosSeleccionados === 0) {
+        const vacio = document.createElement('li');
+        vacio.className = 'list-group-item text-secondary px-0';
+        vacio.textContent = 'No hay productos seleccionados.';
+        resumenProductos.appendChild(vacio);
+      }
 
       totalDisplay.textContent = formatCLP(total);
     }
