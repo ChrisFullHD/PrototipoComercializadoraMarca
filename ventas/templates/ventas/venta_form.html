@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Registrar venta | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page">
+
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Gestión comercial</p>
+      <h1>Registrar venta</h1>
+      <p>Escanea o selecciona productos por unidad y/o por peso para registrar la venta.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'lista_ventas' %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al historial
+    </a>
+  </header>
+
+  <form method="post" id="formRegistrarVenta">
+    {% csrf_token %}
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-8">
+
+        <!-- Productos por unidad / código de barras -->
+        <section class="ventas-page__panel mb-4" aria-labelledby="unidad-title">
+          <div class="ventas-page__toolbar">
+            <div>
+              <h2 id="unidad-title">Productos por unidad</h2>
+              <p>Busca por código de barras o nombre, o indica la cantidad a vender.</p>
+            </div>
+            <div style="min-width: 240px;">
+              <label class="visually-hidden" for="filtroUnidad">Buscar por código de barras o nombre</label>
+              <input
+                type="text"
+                id="filtroUnidad"
+                class="form-control"
+                placeholder="Escanear código de barras o buscar..."
+                autocomplete="off"
+              >
+            </div>
+          </div>
+
+          <div class="ventas-page__table-wrap">
+            <table class="table table-hover align-middle" id="tablaProductosUnidad">
+              <thead>
+                <tr>
+                  <th scope="col">Código</th>
+                  <th scope="col">Producto</th>
+                  <th scope="col">Precio unit.</th>
+                  <th scope="col">Stock disp.</th>
+                  <th scope="col" style="width: 140px;">Cantidad</th>
+                  <th scope="col" class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for prod in productos_unidad %}
+                <tr
+                  class="fila-unidad"
+                  data-barcode="{{ prod.codigo_barras|lower }}"
+                  data-nombre="{{ prod.nombre|lower }}"
+                  data-precio="{{ prod.precio_venta_unidad }}"
+                >
+                  <td><code>{{ prod.codigo_barras }}</code></td>
+                  <td class="fw-semibold">{{ prod.nombre }}</td>
+                  <td>${{ prod.precio_venta_unidad }}</td>
+                  <td>{{ prod.unidades_stock }}</td>
+                  <td>
+                    <input type="hidden" name="producto_unidad_id" value="{{ prod.id }}">
+                    <input
+                      type="number"
+                      name="cantidad_unidad"
+                      class="form-control form-control-sm input-cantidad-unidad"
+                      min="0"
+                      max="{{ prod.unidades_stock }}"
+                      step="1"
+                      value="0"
+                      aria-label="Cantidad para {{ prod.nombre }}"
+                    >
+                  </td>
+                  <td class="text-end fw-bold subtotal-unidad">$0</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="ventas-page__empty">
+                    No hay productos unitarios con stock disponible.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Productos por peso -->
+        <section class="ventas-page__panel" aria-labelledby="peso-title">
+          <div class="ventas-page__toolbar">
+            <div>
+              <h2 id="peso-title">Productos por peso</h2>
+              <p>Ingresa el peso en kilogramos (ej. 0.250 para 250 g).</p>
+            </div>
+          </div>
+
+          <div class="ventas-page__table-wrap">
+            <table class="table table-hover align-middle" id="tablaProductosPeso">
+              <thead>
+                <tr>
+                  <th scope="col">Producto</th>
+                  <th scope="col">Lote / Venc.</th>
+                  <th scope="col">Precio / kg</th>
+                  <th scope="col">Disp. (kg)</th>
+                  <th scope="col" style="width: 150px;">Peso (kg)</th>
+                  <th scope="col" class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for inst in instancias_peso %}
+                <tr
+                  class="fila-peso"
+                  data-precio-kg="{{ inst.precio_kg }}"
+                >
+                  <td class="fw-semibold">{{ inst.producto.nombre }}</td>
+                  <td>{{ inst.lote.numero_lote }} ({{ inst.lote.fecha_vencimiento|date:"d/m/Y" }})</td>
+                  <td>${{ inst.precio_kg }}</td>
+                  <td>{{ inst.cantidad_kg }} kg</td>
+                  <td>
+                    <input type="hidden" name="instancia_peso_id" value="{{ inst.id }}">
+                    <input
+                      type="number"
+                      name="cantidad_kg"
+                      class="form-control form-control-sm input-cantidad-kg"
+                      min="0"
+                      max="{{ inst.cantidad_kg }}"
+                      step="0.001"
+                      value="0"
+                      aria-label="Peso en kg para {{ inst.producto.nombre }}"
+                    >
+                  </td>
+                  <td class="text-end fw-bold subtotal-peso">$0</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="ventas-page__empty">
+                    No hay productos por peso con stock disponible.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Resumen y confirmación -->
+      <div class="col-12 col-lg-4">
+        <aside class="ventas-page__panel" aria-labelledby="resumen-venta-title">
+          <h2 id="resumen-venta-title" class="mb-3">Resumen de la venta</h2>
+
+          <div class="mb-3">
+            <label for="id_medio_pago" class="form-label fw-semibold">Medio de pago</label>
+            <select name="medio_pago" id="id_medio_pago" class="form-select">
+              {% for codigo, etiqueta in medios_pago %}
+                <option value="{{ codigo }}">{{ etiqueta }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div id="bloqueDatosFiado" class="mt-3 p-3 rounded border bg-light" style="display: none;">
+            <div class="fw-bold small text-uppercase mb-2">Datos de venta fiada</div>
+
+            <div class="mb-2">
+              <label for="id_cliente_nombre" class="form-label form-label-sm fw-semibold">
+                Nombre del cliente *
+              </label>
+              <input
+                type="text"
+                name="cliente_nombre"
+                id="id_cliente_nombre"
+                class="form-control form-control-sm"
+                placeholder="Ej. María González"
+                value="{{ cliente_nombre|default:'' }}"
+              >
+            </div>
+
+            <div class="mb-2">
+              <label for="id_cliente_telefono" class="form-label form-label-sm fw-semibold">
+                Teléfono (opcional)
+              </label>
+              <input
+                type="text"
+                name="cliente_telefono"
+                id="id_cliente_telefono"
+                class="form-control form-control-sm"
+                placeholder="Ej. +56 9 1234 5678"
+                value="{{ cliente_telefono|default:'' }}"
+              >
+            </div>
+
+            <div class="mb-2">
+              <label for="id_abono_inicial" class="form-label form-label-sm fw-semibold">
+                Abono inicial (opcional)
+              </label>
+              <input
+                type="number"
+                name="abono_inicial"
+                id="id_abono_inicial"
+                class="form-control form-control-sm"
+                min="0"
+                step="1"
+                value="{{ abono_inicial|default:'0' }}"
+              >
+            </div>
+
+            <div class="mb-2">
+              <label for="id_fecha_vencimiento" class="form-label form-label-sm fw-semibold">
+                Fecha acordada de pago (opcional)
+              </label>
+              <input
+                type="date"
+                name="fecha_vencimiento"
+                id="id_fecha_vencimiento"
+                class="form-control form-control-sm"
+                value="{{ fecha_vencimiento|default:'' }}"
+              >
+            </div>
+
+            <div>
+              <label for="id_detalle_fiado" class="form-label form-label-sm fw-semibold">
+                Detalle / nota (opcional)
+              </label>
+              <textarea
+                name="detalle_fiado"
+                id="id_detalle_fiado"
+                class="form-control form-control-sm"
+                rows="2"
+                placeholder="Ej. Paga el viernes..."
+              >{{ detalle_fiado|default:'' }}</textarea>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="fs-5 fw-semibold">Total a pagar</span>
+            <strong class="fs-4" id="totalVentaDisplay">$0</strong>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn ventas-page__primary">
+              <i class="bi bi-check2-circle" aria-hidden="true"></i>
+              Confirmar y registrar venta
+            </button>
+            <a href="{% url 'lista_ventas' %}" class="btn btn-outline-secondary">
+              Cancelar
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function () {
+    const filtroInput = document.getElementById('filtroUnidad');
+    const filasUnidad = document.querySelectorAll('.fila-unidad');
+    const filasPeso = document.querySelectorAll('.fila-peso');
+    const totalDisplay = document.getElementById('totalVentaDisplay');
+    const medioPagoSelect = document.getElementById('id_medio_pago');
+    const bloqueFiado = document.getElementById('bloqueDatosFiado');
+    const inputClienteNombre = document.getElementById('id_cliente_nombre');
+
+    function formatCLP(valor) {
+      return '$' + Math.round(valor).toLocaleString('es-CL');
+    }
+
+    function recalcularTotales() {
+      let total = 0;
+
+      filasUnidad.forEach((fila) => {
+        const precio = parseFloat(fila.dataset.precio || '0');
+        const inputCant = fila.querySelector('.input-cantidad-unidad');
+        const cant = parseFloat(inputCant.value || '0');
+        const subtotal = cant > 0 ? precio * cant : 0;
+        fila.querySelector('.subtotal-unidad').textContent = formatCLP(subtotal);
+        total += subtotal;
+      });
+
+      filasPeso.forEach((fila) => {
+        const precioKg = parseFloat(fila.dataset.precioKg || '0');
+        const inputKg = fila.querySelector('.input-cantidad-kg');
+        const kg = parseFloat((inputKg.value || '0').replace(',', '.'));
+        const subtotal = kg > 0 ? precioKg * kg : 0;
+        fila.querySelector('.subtotal-peso').textContent = formatCLP(subtotal);
+        total += subtotal;
+      });
+
+      totalDisplay.textContent = formatCLP(total);
+    }
+
+    function toggleBloqueFiado() {
+      if (!medioPagoSelect || !bloqueFiado) return;
+      const textoSeleccionado = (medioPagoSelect.options[medioPagoSelect.selectedIndex]?.text || '').toLowerCase();
+      const esFiado = medioPagoSelect.value === 'FIA' || textoSeleccionado.includes('fiado');
+      bloqueFiado.style.display = esFiado ? '' : 'none';
+      if (inputClienteNombre) {
+        inputClienteNombre.required = esFiado;
+      }
+    }
+
+    if (filtroInput) {
+      filtroInput.addEventListener('input', function () {
+        const termino = this.value.trim().toLowerCase();
+        filasUnidad.forEach((fila) => {
+          const barcode = (fila.dataset.barcode || '').toLowerCase();
+          const nombre = (fila.dataset.nombre || '').toLowerCase();
+          const coincide = !termino || barcode.includes(termino) || nombre.includes(termino);
+          fila.style.display = coincide ? '' : 'none';
+        });
+      });
+
+      filtroInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const termino = this.value.trim().toLowerCase();
+          if (!termino) return;
+          const exacta = Array.from(filasUnidad).find(
+            (fila) => (fila.dataset.barcode || '').toLowerCase() === termino
+          );
+          if (exacta) {
+            const inputCant = exacta.querySelector('.input-cantidad-unidad');
+            const maxCant = parseInt(inputCant.max || '999999', 10);
+            const actual = parseInt(inputCant.value || '0', 10);
+            if (actual < maxCant) {
+              inputCant.value = actual + 1;
+              recalcularTotales();
+            }
+            this.value = '';
+            filasUnidad.forEach((f) => (f.style.display = ''));
+          }
+        }
+      });
+    }
+
+    document.querySelectorAll('.input-cantidad-unidad, .input-cantidad-kg').forEach((input) => {
+      input.addEventListener('input', recalcularTotales);
+      input.addEventListener('change', recalcularTotales);
+    });
+
+    if (medioPagoSelect) {
+      medioPagoSelect.addEventListener('change', toggleBloqueFiado);
+    }
+
+    recalcularTotales();
+    toggleBloqueFiado();
+  })();
+</script>
+{% endblock %}

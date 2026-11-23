@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ accion }} venta fiada | Comercializadora Marca{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventas/css/ventas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ventas-page venta-fiada-edit">
+  <header class="ventas-page__heading">
+    <div>
+      <p class="ventas-page__eyebrow">Cuentas por cobrar · Venta #{{ fiada.id }}</p>
+      <h1>Editar venta fiada</h1>
+      <p>Actualiza los datos del cliente, la fecha acordada, el estado o las observaciones.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'detalle_venta_fiada' fiada.id %}">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al detalle
+    </a>
+  </header>
+
+  <section class="ventas-page__panel venta-fiada-edit__panel" aria-labelledby="form-fiada-title">
+    <div class="venta-fiada-edit__intro">
+      <span class="venta-fiada-edit__icon" aria-hidden="true"><i class="bi bi-pencil-square"></i></span>
+      <div>
+        <h2 id="form-fiada-title">Información editable</h2>
+        <p>El monto fiado y los abonos registrados no se modifican desde esta pantalla.</p>
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold" for="{{ form.cliente_nombre.id_for_label }}">
+            Nombre del cliente
+          </label>
+          {{ form.cliente_nombre }}
+          {% if form.cliente_nombre.errors %}
+            <div class="venta-fiada-edit__error">{{ form.cliente_nombre.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold" for="{{ form.cliente_telefono.id_for_label }}">
+            Teléfono del cliente
+          </label>
+          {{ form.cliente_telefono }}
+          {% if form.cliente_telefono.errors %}
+            <div class="venta-fiada-edit__error">{{ form.cliente_telefono.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold" for="{{ form.fecha_vencimiento.id_for_label }}">
+            Fecha acordada de pago
+          </label>
+          {{ form.fecha_vencimiento }}
+          <div class="form-text">Puedes actualizarla si el cliente acuerda otra fecha.</div>
+          {% if form.fecha_vencimiento.errors %}
+            <div class="venta-fiada-edit__error">{{ form.fecha_vencimiento.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold" for="{{ form.estado.id_for_label }}">
+            Estado
+          </label>
+          {{ form.estado }}
+          {% if form.estado.errors %}
+            <div class="venta-fiada-edit__error">{{ form.estado.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-12">
+          <label class="form-label fw-semibold" for="{{ form.detalle.id_for_label }}">
+            Detalle / observaciones
+          </label>
+          {{ form.detalle }}
+          {% if form.detalle.errors %}
+            <div class="venta-fiada-edit__error">{{ form.detalle.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="venta-fiada-edit__actions">
+        <a class="btn btn-outline-secondary" href="{% url 'detalle_venta_fiada' fiada.id %}">
+          Cancelar
+        </a>
+        <button class="btn ventas-page__primary" type="submit">
+          <i class="bi bi-check2-circle" aria-hidden="true"></i>
+          Guardar cambios
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+  (function () {
+    const form = document.querySelector('.venta-fiada-edit form');
+    if (!form) return;
+    form.querySelectorAll('input[type="text"], input[type="date"]').forEach((el) => {
+      el.classList.add('form-control');
+    });
+    form.querySelectorAll('select').forEach((el) => {
+      el.classList.add('form-select');
+    });
+    form.querySelectorAll('textarea').forEach((el) => {
+      el.classList.add('form-control');
+    });
+  })();
+</script>
+{% endblock %}

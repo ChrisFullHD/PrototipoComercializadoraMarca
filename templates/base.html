@@ -26,7 +26,7 @@
     <div class="cm-sidebar-backdrop" aria-hidden="true"></div>
 
     <aside class="cm-sidebar" id="cm-sidebar" aria-label="Navegación principal">
-      <a class="cm-brand" href="{% url 'lista_productos' %}" aria-label="Comercializadora Marca, inicio">
+      <a class="cm-brand" href="#" aria-label="Comercializadora Marca, inicio">
         <span class="cm-brand-mark" aria-hidden="true">M</span>
         <span class="cm-brand-name">
           <span>COMERCIALIZADORA</span>
@@ -60,7 +60,7 @@
                 <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
               </summary>
               <div class="cm-nav-sublist">
-                <a class="cm-nav-sublink" href="{% url 'lista_productos' %}">Listado de productos</a>
+                <a class="cm-nav-sublink" href="#">Listado de productos</a>
               </div>
             </details>
             <details class="cm-nav-group">
@@ -70,7 +70,9 @@
                 <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
               </summary>
               <div class="cm-nav-sublist">
-                <a class="cm-nav-sublink" href="#">Listado de ventas</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_ventas' %}">Listado de ventas</a>
+                <a class="cm-nav-sublink" href="{% url 'registrar_venta' %}">Registrar venta</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_ventas_fiadas' %}">Listado de ventas fiadas</a>
               </div>
             </details>
             <details class="cm-nav-group">
@@ -80,7 +82,8 @@
                 <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
               </summary>
               <div class="cm-nav-sublist">
-                <a class="cm-nav-sublink" href="#">Listado de devoluciones y bajas</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_devoluciones' %}">Devoluciones</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_bajas' %}">Bajas</a>
               </div>
             </details>
             <details class="cm-nav-group">
@@ -100,7 +103,7 @@
                 <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
               </summary>
               <div class="cm-nav-sublist">
-                <a class="cm-nav-sublink" href="#">Listado de proveedores</a>
+                <a class="cm-nav-sublink" href="{% url 'lista_proveedores' %}">Listado de proveedores</a>
               </div>
             </details>
             <details class="cm-nav-group">
@@ -110,7 +113,11 @@
                 <i class="bi bi-chevron-down cm-nav-chevron" aria-hidden="true"></i>
               </summary>
               <div class="cm-nav-sublist">
-                <a class="cm-nav-sublink" href="#">Resumen de reportes</a>
+                <a class="cm-nav-sublink" href="{% url 'panel_estadisticas' %}">Panel de estadísticas</a>
+                <a class="cm-nav-sublink" href="{% url 'ventas_totales' %}">Ventas totales</a>
+                <a class="cm-nav-sublink" href="{% url 'productos_mayor_rotacion' %}">Mayor rotación</a>
+                <a class="cm-nav-sublink" href="{% url 'stock_productos' %}">Stock de productos</a>
+                <a class="cm-nav-sublink" href="#">Reportes</a>
               </div>
             </details>
             <details class="cm-nav-group">
