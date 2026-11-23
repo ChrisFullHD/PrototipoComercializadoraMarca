@@ -183,7 +183,7 @@ def eliminar_producto(request, pk):
     return _confirm_delete(
         request,
         producto,
-        "lista_productos",
+        "lista_productos", 
         "Producto eliminado",
         "No se pudo eliminar el producto.",
         deleted_instance_count,
