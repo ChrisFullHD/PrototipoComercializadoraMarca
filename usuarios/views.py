@@ -18,6 +18,12 @@ from .forms import (
 from .models import Perfil
 
 
+def inicio_sitio(request):
+    if request.user.is_authenticated:
+        return redirect("registrar_venta")
+    return redirect("iniciar_sesion")
+
+
 def administrador_requerido(view_func):
     @wraps(view_func)
     def wrapped_view(request, *args, **kwargs):
@@ -37,7 +43,7 @@ def _render_user_form(request, form_class, page_title, instance=None):
     form = form_class(request.POST or None, instance=instance)
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, f"Operación '{page_title}' realizada correctamente.")
+        messages.success(request, f"OperaciÃ³n '{page_title}' realizada correctamente.")
         return redirect("lista_usuarios")
 
     return render(
