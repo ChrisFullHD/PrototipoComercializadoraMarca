@@ -7,7 +7,7 @@ urlpatterns = [
     path('inventario/', include('inventario.urls')),
     path('facturas/', include('facturas.urls')),
     path('notificaciones/', include('notificaciones.urls')),
-    path('estadisticas_reportes/', include('estadisticas_reportes.urls')),
+    path('estadisticas/', include('estadisticas_reportes.urls')),
     path('usuarios/', include('usuarios.urls')),
     path('ventas/', include('ventas.urls')),
     path('devoluciones_bajas/', include('devoluciones_bajas.urls')),
