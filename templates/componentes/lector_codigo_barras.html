@@ -1,0 +1,132 @@
+{% load static %}
+{% with reader_id=reader_id|default:"barcode-reader" action_mode=action_mode|default:"lookup" %}
+<link rel="stylesheet" href="{% static 'css/lector_codigo_barras.css' %}" />
+<section
+  class="barcode-reader"
+  data-barcode-reader
+  data-lookup-url="{% url 'buscar_producto_codigo' %}"
+  data-target-input="{{ target_input|default:'' }}"
+  data-action-mode="{{ action_mode }}"
+  aria-labelledby="{{ reader_id }}-title"
+>
+  <header class="barcode-reader__header">
+    <div>
+      <h2 id="{{ reader_id }}-title">
+        {% if action_mode == 'input' %}Escanear código para el producto{% else %}Lector de códigos de barras{% endif %}
+      </h2>
+      <p>
+        {% if action_mode == 'input' %}Usa la cámara o el lector USB para asignar el código de barras.{% else %}Usa el lector USB o la cámara conectada a este computador.{% endif %}
+      </p>
+    </div>
+    <div
+      class="barcode-reader__modes"
+      role="group"
+      aria-label="Método de lectura"
+    >
+      <button
+        class="barcode-reader__mode is-active"
+        type="button"
+        data-reader-mode="usb"
+        aria-pressed="true"
+      >
+        <i class="bi bi-usb-symbol" aria-hidden="true"></i> Lector USB
+      </button>
+      <button
+        class="barcode-reader__mode"
+        type="button"
+        data-reader-mode="camera"
+        aria-pressed="false"
+      >
+        <i class="bi bi-camera-video" aria-hidden="true"></i> Cámara
+      </button>
+    </div>
+  </header>
+
+  <div class="barcode-reader__usb-panel" data-usb-panel>
+    <label for="{{ reader_id }}-usb-input">Campo de lectura USB</label>
+    <p class="barcode-reader__hint" id="{{ reader_id }}-usb-hint">
+      Activa este campo y escanea. El lector debe enviar Enter al terminar.
+    </p>
+    <form
+      class="barcode-reader__request"
+      data-barcode-request
+      hx-get="{% url 'buscar_producto_codigo' %}"
+      hx-trigger="submit"
+      hx-target="#{{ reader_id }}-result"
+      hx-swap="innerHTML"
+    >
+      <input
+        id="{{ reader_id }}-usb-input"
+        class="barcode-reader__input"
+        type="text"
+        name="codigo"
+        data-barcode-input
+        inputmode="none"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Esperando lectura del lector USB"
+        aria-describedby="{{ reader_id }}-usb-hint"
+      />
+      <button class="barcode-reader__submit" type="submit">
+        Procesar código
+      </button>
+    </form>
+  </div>
+
+  <div class="barcode-reader__camera-panel" data-camera-panel hidden>
+    <label for="{{ reader_id }}-camera-select">Cámara del computador</label>
+    <div class="barcode-reader__camera-controls">
+      <select
+        id="{{ reader_id }}-camera-select"
+        class="barcode-reader__select"
+        data-camera-select
+      >
+        <option value="">Cámara predeterminada</option>
+      </select>
+      <button
+        class="barcode-reader__submit"
+        type="button"
+        data-camera-start
+      >
+        <i class="bi bi-camera-video" aria-hidden="true"></i> Activar cámara
+      </button>
+      <button
+        class="barcode-reader__stop"
+        type="button"
+        data-camera-stop
+        hidden
+      >
+        <i class="bi bi-camera-video-off" aria-hidden="true"></i> Detener cámara
+      </button>
+    </div>
+    <video
+      class="barcode-reader__video"
+      data-camera-video
+      playsinline
+      muted
+      hidden
+      aria-label="Vista de la cámara para leer el código"
+    ></video>
+  </div>
+
+  <p
+    class="barcode-reader__status"
+    data-reader-status
+    role="status"
+    aria-live="polite"
+  >
+    Modo USB listo. Selecciona el campo y escanea un producto.
+  </p>
+  <div
+    id="{{ reader_id }}-result"
+    class="barcode-reader__result"
+    data-barcode-result-container
+    aria-live="polite"
+  ></div>
+</section>
+
+<script src="{% static 'scripts/htmx/htmx.min.js' %}"></script>
+<script src="{% static 'scripts/zxing/zxing-library.umd.min.js' %}"></script>
+<script src="{% static 'scripts/zxing/zxing-browser.umd.min.js' %}"></script>
+<script src="{% static 'scripts/lector_codigo_barras.js' %}"></script>
+{% endwith %}

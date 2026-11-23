@@ -1,0 +1,195 @@
+.barcode-reader {
+  margin: 0 0 22px;
+  padding: 18px;
+  border: 1px solid var(--cm-borde, #e8ddca);
+  border-radius: 12px;
+  background: var(--cm-blanco, #fffefb);
+  box-shadow: 0 6px 18px rgba(51, 45, 37, 0.05);
+  color: var(--cm-texto, #332d25);
+}
+
+.barcode-reader__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 15px;
+}
+
+.barcode-reader__header h2 {
+  margin: 0;
+  color: var(--cm-texto, #332d25);
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.barcode-reader__header p,
+.barcode-reader__hint {
+  margin: 4px 0 0;
+  color: var(--cm-texto-suave, #756b5d);
+  font-size: 12px;
+}
+
+.barcode-reader__modes,
+.barcode-reader__camera-controls,
+.barcode-reader__request {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.barcode-reader__mode,
+.barcode-reader__submit,
+.barcode-reader__stop {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid var(--cm-borde, #e8ddca);
+  border-radius: 8px;
+  background: var(--cm-blanco, #fffefb);
+  color: var(--cm-texto, #332d25);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.barcode-reader__mode.is-active {
+  border-color: var(--cm-verde, #54785a);
+  background: var(--cm-verde, #54785a);
+  color: #fff;
+}
+
+.barcode-reader__mode:focus-visible,
+.barcode-reader__submit:focus-visible,
+.barcode-reader__stop:focus-visible,
+.barcode-reader__input:focus-visible,
+.barcode-reader__select:focus-visible {
+  outline: 3px solid rgba(84, 120, 90, 0.35);
+  outline-offset: 2px;
+}
+
+.barcode-reader__usb-panel > label,
+.barcode-reader__camera-panel > label {
+  display: block;
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.barcode-reader__hint {
+  margin-bottom: 9px;
+}
+
+.barcode-reader__input,
+.barcode-reader__select {
+  min-width: 0;
+  min-height: 40px;
+  flex: 1 1 230px;
+  padding: 8px 10px;
+  border: 1px solid var(--cm-borde, #e8ddca);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--cm-texto, #332d25);
+  font: inherit;
+  font-size: 13px;
+}
+
+.barcode-reader__input:focus,
+.barcode-reader__select:focus {
+  border-color: var(--cm-verde, #54785a);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(84, 120, 90, 0.13);
+}
+
+.barcode-reader__submit {
+  border-color: var(--cm-verde, #54785a);
+  background: var(--cm-verde, #54785a);
+  color: #fff;
+}
+
+.barcode-reader__submit:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.barcode-reader__stop {
+  border-color: #a64b45;
+  background: #fff;
+  color: #8e3d38;
+}
+
+.barcode-reader__submit:disabled,
+.barcode-reader__mode:disabled,
+.barcode-reader__stop:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.barcode-reader__status {
+  margin: 12px 0 0;
+  color: var(--cm-texto-suave, #756b5d);
+  font-size: 12px;
+}
+
+.barcode-reader__status[data-state="error"],
+.barcode-reader__result-card.is-error {
+  color: #9c342e;
+}
+
+.barcode-reader__status[data-state="loading"] {
+  color: #6d571c;
+}
+
+.barcode-reader__result-card {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--cm-borde, #e8ddca);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.barcode-reader__result-card span {
+  color: var(--cm-texto-suave, #756b5d);
+}
+
+.barcode-reader__result-card.is-found {
+  border-color: rgba(84, 120, 90, 0.38);
+  background: rgba(84, 120, 90, 0.07);
+}
+
+.barcode-reader__result-card.is-not-found {
+  border-color: rgba(194, 139, 43, 0.4);
+  background: rgba(247, 197, 118, 0.12);
+}
+
+.barcode-reader__result-card.is-error {
+  border-color: rgba(156, 52, 46, 0.35);
+  background: rgba(156, 52, 46, 0.06);
+}
+
+.barcode-reader__video {
+  display: block;
+  width: min(100%, 560px);
+  max-height: 360px;
+  margin-top: 12px;
+  border-radius: 9px;
+  background: #171717;
+  object-fit: contain;
+}
+
+.barcode-reader [hidden] {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .barcode-reader__header {
+    flex-direction: column;
+  }
+}

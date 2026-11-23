@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/inventario.css' %}" />
+{% if barcode_reader %}
+<link rel="stylesheet" href="{% static 'css/lector_codigo_barras.css' %}" />
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="inventory-form-card">
+  <h1>{{ page_title }}</h1>
+  {% if barcode_reader %}
+    {% include "componentes/lector_codigo_barras.html" with reader_id="product-barcode-reader" target_input="#id_codigo_barras" action_mode="input" %}
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="inventory-form-actions">
+      <button class="inventory-add-button" type="submit">Guardar</button>
+      <a class="inventory-cancel-button" href="{% url cancel_url %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{# Usa el nombre de bloque de scripts que tenga tu base.html (extra_js, scripts, etc.). #}
+{# Si base.html ya carga estos tres archivos, elimina este bloque para no cargarlos dos veces. #}
+{% block extra_js %}
+{% if barcode_reader %}
+<script src="{% static 'scripts/zxing/zxing-library.umd.min.js' %}"></script>
+<script src="{% static 'scripts/zxing/zxing-browser.umd.min.js' %}"></script>
+<script src="{% static 'scripts/lector_codigo_barras.js' %}"></script>
+{% endif %}
+{% endblock %}
