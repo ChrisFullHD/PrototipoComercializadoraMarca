@@ -38,17 +38,17 @@ El sistema utiliza **Python y Django** como framework principal, **HTMX** para i
 
 ## Gestores
 
-| App                   | Modelos                                                                       | HU                                                          | Responsable      | Rama              |
-| --------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------- | ----------------- |
-| Inventario            | Producto, Producto_Peso, Producto_Unitario, Categoria, Movimientos_Inventario | HU01, HU02, HU03, HU04, HU05, HU06, HU07, HU08              | Joaquín Guarachi | feature/jguarachi |
-| Ventas/Fiados         | Venta, Detalle_Venta                                                          | HU09, HU10, HU11, HU12, HU13, HU14, HU15, HU16, HU17        | Christian Mollo  | feature/cmollo    |
-| Devolución/Bajas      | Devolucion                                                                    | HU18, HU19, HU20, HU21                                      | Giovanni Gómez   | feature/ggomez    |
-| Notificaciones        | Notificacion\*                                                                | HU22                                                        | Christian Mollo  | feature/cmollo    |
-| Proveedores           | Proveedor                                                                     | HU23, HU24                                                  | Christian Mollo  | feature/cmollo    |
-| Estadísticas/Reportes | Reporte                                                                       | HU25, HU26, HU27, HU28, HU29, HU30                          | Giovanni Gómez   | feature/ggomez    |
-| Facturas              | Factura\*                                                                     | Sin HU asociadas (Considerado en retroalimentación cliente) | Joaquín Guarachi | feature/jguarachi |
-| Usuarios              | Usuario, Rol                                                                  | Sin HU asociadas                                            | Joaquín Guarachi | feature/jguarachi |
-| Respaldos             | Respaldo\*                                                                    | Sin HU asociadas                                            | Giovanni Gómez   | feature/ggomez    |
+| App                   | Modelos                                                                                       | HU                                                          | Responsable      | Rama              |
+| --------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------- | ----------------- |
+| Inventario            | Categoria, Lote, Producto, Producto_Unitario, Instancia_Producto_Peso, Movimientos_Inventario | HU01, HU02, HU03, HU04, HU05, HU06, HU07, HU08              | Joaquín Guarachi | feature/jguarachi |
+| Ventas/Fiados         | Venta, Detalle_Venta                                                                          | HU09, HU10, HU11, HU12, HU13, HU14, HU15, HU16, HU17        | Christian Mollo  | feature/cmollo    |
+| Devolución/Bajas      | Devolucion, Baja                                                                              | HU18, HU19, HU20, HU21                                      | Giovanni Gómez   | feature/ggomez    |
+| Notificaciones        | Notificacion\*                                                                                | HU22                                                        | Christian Mollo  | feature/cmollo    |
+| Proveedores           | Proveedor                                                                                     | HU23, HU24                                                  | Christian Mollo  | feature/cmollo    |
+| Estadísticas/Reportes | Reporte                                                                                       | HU25, HU26, HU27, HU28, HU29, HU30                          | Giovanni Gómez   | feature/ggomez    |
+| Facturas              | Factura\*                                                                                     | Sin HU asociadas (Considerado en retroalimentación cliente) | Joaquín Guarachi | feature/jguarachi |
+| Usuarios              | Usuario(Perfil), Rol                                                                          | Sin HU asociadas                                            | Joaquín Guarachi | feature/jguarachi |
+| Respaldos             | Respaldo\*                                                                                    | Sin HU asociadas                                            | Giovanni Gómez   | feature/ggomez    |
 
 ## Historias de usuario
 

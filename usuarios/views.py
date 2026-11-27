@@ -5,14 +5,23 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from .forms import CustomUserChangeForm, CustomUserCreationForm
+from .forms import (
+    CustomAuthenticationForm,
+    CustomUserChangeForm,
+    CustomUserCreationForm,
+)
 from .models import Perfil
+
+
+def inicio_sitio(request):
+    if request.user.is_authenticated:
+        return redirect("registrar_venta")
+    return redirect("iniciar_sesion")
 
 
 def administrador_requerido(view_func):
@@ -34,7 +43,7 @@ def _render_user_form(request, form_class, page_title, instance=None):
     form = form_class(request.POST or None, instance=instance)
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, f"{page_title} correctamente.")
+        messages.success(request, f"OperaciÃ³n '{page_title}' realizada correctamente.")
         return redirect("lista_usuarios")
 
     return render(
@@ -52,8 +61,12 @@ def iniciar_sesion(request):
     if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
 
-    next_url = request.POST.get("next") or request.GET.get("next", "")
-    form = AuthenticationForm(request, data=request.POST or None)
+    next_url = (
+        request.POST.get("next")
+        or request.GET.get("next")
+        or ""
+    ).strip()
+    form = CustomAuthenticationForm(request, data=request.POST or None)
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
         if not url_has_allowed_host_and_scheme(
@@ -86,7 +99,7 @@ def lista_usuarios(request):
 @login_required
 @administrador_requerido
 def crear_usuario(request):
-    return _render_user_form(request, CustomUserCreationForm, "Usuario agregado")
+    return _render_user_form(request, CustomUserCreationForm, "Agregar un usuario")
 
 
 @login_required
@@ -96,7 +109,7 @@ def editar_usuario(request, pk):
     return _render_user_form(
         request,
         CustomUserChangeForm,
-        "Usuario modificado",
+        "Modificar datos de usuario",
         instance=usuario,
     )
 

@@ -138,5 +138,5 @@ MAILERS = {
 
 # Rutas autenticación (app usuarios)
 LOGIN_URL = '/usuarios/login/' 
-LOGIN_REDIRECT_URL = '/ventas/' 
+LOGIN_REDIRECT_URL = '/ventas/registrar/' 
 LOGOUT_REDIRECT_URL = '/usuarios/login/'

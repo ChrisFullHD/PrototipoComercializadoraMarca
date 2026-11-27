@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Categorías de inventario{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/inventario.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="inventory-page">
+  <nav class="inventory-shortcuts" aria-label="Navegación de inventario">
+    <a href="{% url 'lista_productos' %}"><i class="bi bi-box-seam" aria-hidden="true"></i> Productos</a>
+    <a href="{% url 'lista_lotes' %}"><i class="bi bi-boxes" aria-hidden="true"></i> Lotes</a>
+  </nav>
+  <header class="inventory-heading">
+    <div class="inventory-heading-icon" aria-hidden="true"><i class="bi bi-tags"></i></div>
+    <div class="inventory-heading-copy">
+      <h1>Categorías</h1>
+      <p>Categorías disponibles para clasificar productos.</p>
+    </div>
+    <a class="inventory-add-button" href="{% url 'categoria_crear' %}">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar categoría
+    </a>
+  </header>
+  <section class="inventory-section">
+    <div class="inventory-table-wrap">
+      <table class="inventory-table">
+        <thead><tr><th scope="col">Nombre</th><th scope="col">Acciones</th></tr></thead>
+        <tbody>
+          {% for categoria in categorias %}
+            <tr>
+              <td>{{ categoria.nombre }}</td>
+              <td>
+                <div class="inventory-row-actions">
+                  <a class="inventory-icon-button" href="{% url 'categoria_editar' pk=categoria.pk %}" aria-label="Modificar categoría {{ categoria.nombre }}" title="Modificar">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </a>
+                  <a class="inventory-icon-button inventory-delete-link" href="{% url 'categoria_eliminar' pk=categoria.pk %}" aria-label="Eliminar categoría {{ categoria.nombre }}" title="Eliminar">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td class="inventory-empty" colspan="2">No hay categorías registradas.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

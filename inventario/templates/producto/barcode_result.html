@@ -1,0 +1,31 @@
+{% if estado == "encontrado" %}
+  <div
+    class="barcode-reader__result-card is-found"
+    data-barcode-result
+    data-state="encontrado"
+    data-message="{{ mensaje }}"
+    data-code="{{ codigo }}"
+    data-product-id="{{ producto.pk }}"
+    data-product-name="{{ producto.nombre }}"
+    data-product-barcode="{{ producto.codigo_barras|default_if_none:'' }}"
+    data-category="{{ producto.categoria.nombre }}"
+    data-unit-stock="{{ producto.unidades_stock }}"
+    data-weight-stock="{{ peso_stock }}"
+    data-price="{{ producto.precio_venta_unidad }}"
+  >
+    <strong>{{ producto.nombre }}</strong>
+    <span>{{ producto.codigo_barras|default:"Sin código" }} · {{ producto.categoria.nombre }}</span>
+    <span>Stock: {{ producto.unidades_stock }} unidades · {{ peso_stock }} kg en instancias por peso</span>
+  </div>
+{% else %}
+  <div
+    class="barcode-reader__result-card {% if estado == 'no_encontrado' %}is-not-found{% else %}is-error{% endif %}"
+    data-barcode-result
+    data-state="{{ estado }}"
+    data-message="{{ mensaje }}"
+    data-code="{{ codigo }}"
+  >
+    <strong>{% if estado == "no_encontrado" %}Producto no encontrado{% else %}Código inválido{% endif %}</strong>
+    <span>{{ mensaje }}</span>
+  </div>
+{% endif %}

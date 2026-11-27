@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.urls import path, include 
 from django.conf import settings 
 from django.conf.urls.static import static 
+from usuarios.views import inicio_sitio
+
 urlpatterns = [
+    path('', inicio_sitio, name='inicio'),
     path('admin/', admin.site.urls),
     path('inventario/', include('inventario.urls')),
     path('facturas/', include('facturas.urls')),
